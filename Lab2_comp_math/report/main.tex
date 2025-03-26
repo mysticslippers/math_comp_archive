@@ -1,0 +1,187 @@
+\documentclass[12pt]{report}
+
+\usepackage{cmap}
+\usepackage[T1,T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{dsfont}
+\usepackage{bm}
+\usepackage{diagbox}
+\usepackage[left=20mm,right=10mm,top=20mm,bottom=20mm,bindingoffset=2mm]{geometry}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{minted}
+
+\DeclareMathOperator{\N}{\mathbb{N}}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\Z}{\mathbb{Z}}
+\DeclareMathOperator{\CC}{\mathbb{C}}
+\DeclareMathOperator{\PP}{\mathrm{P}}
+\DeclareMathOperator{\Expec}{\mathrm{E}}
+\DeclareMathOperator{\Var}{\mathrm{Var}}
+\DeclareMathOperator{\Cov}{\mathrm{Cov}}
+\DeclareMathOperator{\asConv}{\xrightarrow{a.s.}}
+\DeclareMathOperator{\LpConv}{\xrightarrow{Lp}}
+\DeclareMathOperator{\pConv}{\xrightarrow{p}}
+\DeclareMathOperator{\dConv}{\xrightarrow{d}}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue,
+	urlcolor=blue
+}
+
+\lstset{language=Python, extendedchars=\true}
+
+\lstdefinestyle{pythonstyle}{
+	language=Python,
+	backgroundcolor=\color{lightgray},
+	commentstyle=\color{green},
+	keywordstyle=\color{blue},
+	stringstyle=\color{red},
+	basicstyle=\ttfamily,
+	frame=single,
+	breaklines=true
+}
+
+\addto\captionsrussian{\renewcommand{\refname}{Список использованных источников}}
+
+\begin{document}
+	
+	\begin{titlepage}
+		\begin{center}
+			\large{Федеральное государственное автономное образовательное учреждение высшего образования <<Национальный исследовательский университет ИТМО>>}
+		\end{center}
+		
+		\vspace{15em}
+		
+		\begin{center}
+			\huge{\textbf{Лабораторная работа №2}} \\
+			\large{По дисциплине <<Вычислительная математика>>} \\
+			\large{Вариант №8}
+		\end{center}
+		
+		\vspace{5em}
+		
+		\begin{flushright}
+			\textit{\large{Выполнил:}} \\
+			\large{Студент группы P3206} \\
+			\large{Михайлов Дмитрий} \\
+			\large{Андреевич} \\
+			\textit{\large{Преподаватель:}} \\
+			\large{Малышева Татьяна} \\
+			\large{Алексеевна}
+		\end{flushright}
+		
+		\vspace{2cm}
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.5\linewidth]{image.png}
+		\end{figure}
+		
+		\begin{center}
+			Санкт-Петербург \\
+			2025 год
+		\end{center}
+	\end{titlepage}
+	
+	\tableofcontents
+	\newpage
+	
+	\addcontentsline{toc}{section}{Цель работы}
+	\section*{Цель работы}
+	Изучить численные методы решения нелинейных уравнений и их
+	систем, найти корни заданного нелинейного уравнения/системы нелинейных уравнений, выполнить программную реализацию методов.
+	
+	\addcontentsline{toc}{section}{Ход работы}
+	\section*{Ход работы}
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			№ шага & $x_k$ & $f(x_k)$ & $x_{k+1}$ & $\phi(x_k)$ & $|x_k - x_{k+1}|$ \\ \hline
+			 &  &  &  &  & \\ \hline
+			 &  &  &  &  & \\ \hline
+			 &  &  &  &  & \\ \hline
+			 &  &  &  &  & \\ \hline
+			 &  &  &  &  & \\ \hline
+			 &  &  &  &  & \\ \hline
+			 &  &  &  &  & \\ \hline
+			 &  &  &  &  & \\ \hline
+		\end{tabular}
+		\caption{Уточнение крайнего правого корня методом простой итерации}
+		\label{tab:1}
+	\end{table}
+
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|c|c|}
+			\hline
+			№ шага & $a$ & $b$ & $x_k$ & $f(a)$ & $f(b)$ & $f(x)$ & $|x_k - x_{k+1}|$ \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+		\end{tabular}
+		\caption{Уточнение крайнего левого корня методом хорд}
+		\label{tab:2}
+	\end{table}	
+	
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|c|c|}
+			\hline
+			№ шага & $x_{k-1}$ & $f(x_{k-1})$ & $x_k$ & $f(x_k)$ & $x_{k+1}$ & $f(x_{k+1})$ & $|x_k - x_{k+1}|$ \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+			&  &  &  &  &  &  & \\ \hline
+		\end{tabular}
+		\caption{Уточнение центрального корня методом секущих}
+		\label{tab:3}
+	\end{table}	
+	\newpage
+	
+	\addcontentsline{toc}{section}{Блок-схемы используемых методов}
+	\section*{Блок-схемы используемых методов}
+	
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.22\linewidth]{Рисунок3.png}
+		\caption{Блок-схема метода простой итерации}
+		
+		\includegraphics[width=0.22\linewidth]{Рисунок1.png}
+		\caption{Блок-схема метода хорд}
+		
+		\includegraphics[width=0.22\linewidth]{Рисунок2.png}
+		\caption{Блок-схема метода секущих}
+	\end{figure}
+	
+	\addcontentsline{toc}{section}{Листинг программы}
+	\section*{Листинг программы}
+	
+	\addcontentsline{toc}{section}{Результат выполнения программы}
+	\section*{Результат выполнения программы}
+	
+	\addcontentsline{toc}{section}{Вывод}
+	\section*{Вывод}
+	В результате выполнения данной лабораторной работой я познакомился с численными методами решения нелинейных уравнений и реализовал метод хорд, метод секущих и метод простой итерации на языке программирования Python, закрепив знания.
+\end{document}
