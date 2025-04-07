@@ -2,6 +2,8 @@
 # Михайлов Дмитрий Андреевич
 # Группа P3206
 
+import numpy as np
+
 FILE_PATH = "iofiles/input.txt"
 
 
@@ -137,8 +139,14 @@ def main():
         return
     det, reduced_matrix, roots, residuals = answer
 
+    arr = np.array(matrix)
+    square_counter = min(arr.shape)
+    np_matrix = arr[:square_counter, :square_counter]
+    np_det = np.linalg.det(np_matrix)
     print("\nОпределитель:")
     print(det)
+    print("\nОпределитель при использовании библиотеки numpy:")
+    print(np_det)
 
     print("\nПреобразованная матрица:")
     for row in reduced_matrix:
@@ -148,6 +156,11 @@ def main():
 
     print("\nВектор неизвестных:")
     for root in roots:
+        print('  ' + str(root))
+
+    np_roots = np.linalg.solve(arr[:, :-1], arr[:, -1])
+    print("\nВектор неизвестных при использовании библиотеки numpy:")
+    for root in np_roots:
         print('  ' + str(root))
 
     print("\nВектор невязок:")
