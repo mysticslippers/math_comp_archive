@@ -61,7 +61,7 @@ def print_vector(vector):
 
 
 def get_matrix_order():
-    """ Получить порядок матрицы от пользователя """
+    """Получить порядок матрицы от пользователя."""
     while True:
         try:
             n = int(input("Порядок матрицы: "))
@@ -74,6 +74,7 @@ def get_matrix_order():
 
 
 def solve_gauss_method(matrix):
+    """Решить СЛАУ методом Гаусса с выбором главного элемента."""
     swap_counter = 0
     size = len(matrix)
 
