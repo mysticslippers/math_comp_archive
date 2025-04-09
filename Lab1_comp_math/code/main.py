@@ -7,165 +7,159 @@ import numpy as np
 FILE_PATH = "iofiles/input.txt"
 
 
-def readFile():
+def get_matrix_file():
     """ Получить матрицу из файла """
-    with open(FILE_PATH, 'rt') as fin:
-        try:
-            n = int(fin.readline())
-            matrix = []
-            for line in fin:
-                new_row = list(map(float, line.strip().split()))
-                if len(new_row) != (n + 1):
-                    raise ValueError
-                matrix.append(new_row)
-            if len(matrix) != n:
-                raise ValueError
-        except ValueError:
-            return None
+    try:
+        with open(FILE_PATH, 'rt') as fin:
+            n = int(fin.readline().strip())
+            matrix = [list(map(float, line.strip().split())) for line in fin]
+
+            if len(matrix) != n or any(len(row) != n + 1 for row in matrix):
+                raise ValueError("Неверный размер матрицы!!")
+    except (ValueError, FileNotFoundError, OSError) as e:
+        print(f"Ошибка при чтении файла: {e}")
+        return None
+
     return matrix
 
 
-def readConsole():
+def get_matrix_console():
     """ Получить матрицу с клавиатуры """
     print("Вводите коэффициенты матрицы через пробел строка за строкой.")
+
+    n = get_matrix_order()
+    if n is None:
+        return None
+
+    matrix = []
+    print("Коэффициенты матрицы:")
+
+    for i in range(n):
+        while True:
+            try:
+                row = list(map(float, input(f"Введите строку {i + 1}: ").strip().split()))
+                if len(row) != n + 1:
+                    raise ValueError(f"Строка должна содержать {n + 1} элементов!")
+                matrix.append(row)
+                break
+            except ValueError as ve:
+                print(ve)
+
+    return matrix
+
+
+def print_matrix(matrix):
+    """Выводит матрицу с форматированием."""
+    for row in matrix:
+        print(' '.join('{:10}'.format(round(col, 3)) for col in row))
+
+
+def print_vector(vector):
+    """Выводит вектор неизвестных с форматированием."""
+    for value in vector:
+        print('  ' + str(value))
+
+
+def get_matrix_order():
+    """ Получить порядок матрицы от пользователя """
     while True:
         try:
             n = int(input("Порядок матрицы: "))
             if n <= 0:
-                print("Порядок матрицы должен быть положительным.")
+                print("Порядок матрицы должен быть положительным!")
             else:
-                break
+                return n
         except ValueError:
-            print("Порядок матрицы должен быть целым числом.")
-    matrix = []
-    print("Коэффициенты матрицы:")
-    try:
-        for i in range(n):
-            matrix.append(list(map(float, input().strip().split())))
-            if len(matrix[i]) != (n + 1):
-                raise ValueError
-    except ValueError:
-        return None
-    return matrix
+            print("Порядок матрицы должен быть целым числом!")
 
 
-def solveMinor(matrix, i, j):
-    """ Найти минор элемента матрицы """
-    n = len(matrix)
-    return [[matrix[row][col] for col in range(n) if col != j] for row in range(n) if row != i]
+def solve_gauss_method(matrix):
+    swap_counter = 0
+    size = len(matrix)
+
+    for i in range(size - 1):
+        max_row = i
+        max_val = abs(matrix[i][i])
+
+        for k in range(i + 1, size):
+            current_val = abs(matrix[k][i])
+            if current_val > max_val:
+                max_val, max_row = current_val, k
+
+        if max_row != i:
+            matrix[i], matrix[max_row] = matrix[max_row], matrix[i]
+            swap_counter += 1
+
+        print(f"\nКоличество перестановок на {i}-м" + " шаге: " + str(swap_counter))
+        if matrix[i][i] == 0:
+            return 0
 
 
-def solveDet(matrix):
-    """ Найти определитель матрицы """
-    n = len(matrix)
-    if n == 1:
-        return matrix[0][0]
-    det = 0
-    sgn = 1
-    for j in range(n):
-        det += sgn * matrix[0][j] * solveDet(solveMinor(matrix, 0, j))
-        sgn *= -1
-    return det
+        for k in range(i + 1, size):
+            factor = matrix[k][i] / matrix[i][i]
+            for j in range(i, size):
+                matrix[k][j] -= factor * matrix[i][j]
 
+            print(f"После изменения строки {k}:")
+            print_matrix(matrix)
 
-def solve(matrix):
-    """ Метод Гаусса с выбором главного элемента по столбцам """
-    n = len(matrix)
-    det = solveDet([matrix[i][:n] for i in range(n)])
-    if det == 0:
-        return None
+    roots = [0] * size
+    for i in range(size - 1, -1, -1):
+        s_part = sum(matrix[i][j] * roots[j] for j in range(i + 1, size))
+        roots[i] = (matrix[i][size] - s_part) / matrix[i][i]
 
-    # Прямой ход
-    for i in range(n - 1):
-        # Поиск максимального элемента в столбце
-        max_i = i
-        for m in range(i + 1, n):
-            if abs(matrix[m][i]) > abs(matrix[max_i][i]):
-                max_i = m
+    residuals = [sum(matrix[i][j] * roots[j] for j in range(size)) - matrix[i][size] for i in range(size)]
 
-        # Перестановка строк
-        if max_i != i:
-            for j in range(n + 1):
-                matrix[i][j], matrix[max_i][j] = matrix[max_i][j], matrix[i][j]
+    determinant = (-1) ** swap_counter
+    for i in range(size):
+        determinant *= matrix[i][i]
 
-        # Исключение i-того неизвестного
-        for k in range(i + 1, n):
-            coef = matrix[k][i] / matrix[i][i]
-            for j in range(i, n + 1):
-                matrix[k][j] -= coef * matrix[i][j]
-
-    reduced_matrix = matrix[:]
-
-    # Обратный ход
-    roots = [0] * n
-    for i in range(n - 1, -1, -1):
-        s_part = 0
-        for j in range(i + 1, n):
-            s_part += matrix[i][j] * roots[j]
-        roots[i] = (matrix[i][n] - s_part) / matrix[i][i]
-
-    # Вычисление невязок
-    residuals = [0] * n
-    for i in range(n):
-        s_part = 0
-        for j in range(n):
-            s_part += matrix[i][j] * roots[j]
-        residuals[i] = s_part - matrix[i][n]
-
-    return det, reduced_matrix, roots, residuals
+    return None if determinant == 0 else determinant, matrix, roots, residuals
 
 
 def main():
     print("\t\tМетод Гаусса с выбором главного элемента по столбцам")
-    print("\nВзять коэффициенты из файла или ввести с клавиатуры? (+/-)")
+    method = input("\nВзять коэффициенты из файла или ввести с клавиатуры? (+/-)\n>>> ")
 
-    method = input(">>> ")
-    while (method != '+') and (method != '-'):
+    while method not in ('+', '-'):
         print("Введите '+' или '-' для выбора способа ввода.")
         method = input(">>> ")
 
-    if method == '+':
-        matrix = readFile()
-    else:
-        matrix = readConsole()
+    matrix = get_matrix_file() if method == '+' else get_matrix_console()
 
     if matrix is None:
         print("При считывании коэффициентов матрицы произошла ошибка!")
         return
 
-    answer = solve(matrix[:])
+    answer = solve_gauss_method(matrix[:])
     if answer is None:
         print("\nМатрица является несовместной.")
         return
-    det, reduced_matrix, roots, residuals = answer
+
+    determinant, reduced_matrix, roots, residuals = answer
 
     arr = np.array(matrix)
-    square_counter = min(arr.shape)
-    np_matrix = arr[:square_counter, :square_counter]
-    np_det = np.linalg.det(np_matrix)
+    square_dim = min(arr.shape)
+    np_matrix = arr[:square_dim, :square_dim]
+    np_determinant = np.linalg.det(np_matrix)
+
     print("\nОпределитель:")
-    print(det)
+    print(determinant)
     print("\nОпределитель при использовании библиотеки numpy:")
-    print(np_det)
+    print(np_determinant)
 
     print("\nПреобразованная матрица:")
-    for row in reduced_matrix:
-        for col in row:
-            print('{:10}'.format(round(col, 3)), end='')
-        print()
+    print_matrix(reduced_matrix)
 
     print("\nВектор неизвестных:")
-    for root in roots:
-        print('  ' + str(root))
+    print_vector(roots)
 
     np_roots = np.linalg.solve(arr[:, :-1], arr[:, -1])
     print("\nВектор неизвестных при использовании библиотеки numpy:")
-    for root in np_roots:
-        print('  ' + str(root))
+    print_vector(np_roots)
 
     print("\nВектор невязок:")
-    for residual in residuals:
-        print('  ' + str(residual))
+    print_vector(residuals)
 
     input("\n\nНажмите Enter, чтобы выйти.")
 
