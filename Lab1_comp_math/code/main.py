@@ -98,7 +98,7 @@ def solve_gauss_method(matrix):
 
         for k in range(i + 1, size):
             factor = matrix[k][i] / matrix[i][i]
-            for j in range(i, size):
+            for j in range(i, size + 1):
                 matrix[k][j] -= factor * matrix[i][j]
 
             print(f"После изменения строки {k}:")
