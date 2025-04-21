@@ -42,12 +42,12 @@ def list_functions():
     print("\n".join(functions))
 
 
-def read_function_choice():
+def read_function_choice(prompt="Выберите номер функции (1-5): "):
     list_functions()
 
     while True:
         try:
-            function_choice = int(input("Выберите номер функции (1-5): "))
+            function_choice = int(input(prompt))
             if 1 <= function_choice <= 5:
                 return function_choice
             else:
@@ -73,14 +73,22 @@ def read_borders(function_choice):
         return read_borders(function_choice)
 
 
-def read_tolerance():
+def read_tolerance(prompt="Введите допустимую погрешность (0 < tolerance <= 1): "):
     while True:
         try:
-            tolerance = float(input("Введите допустимую погрешность (0 < tolerance <= 1): "))
+            tolerance = float(input(prompt))
             if 0 < tolerance <= 1:
                 return tolerance
             else:
                 print("Некорректный ввод! Пожалуйста, введите значение в диапазоне от 0 до 1.")
+        except ValueError:
+            print("Ошибка ввода! Пожалуйста, введите числовое значение.")
+
+
+def read_initial_approximation(prompt="Введите допустимое начальное приближение: "):
+    while True:
+        try:
+            return float(input(prompt))
         except ValueError:
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
 
