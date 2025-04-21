@@ -10,17 +10,22 @@ variable = sp.symbols('x')
 INPUT_FILE_PATH = "iofiles/input.txt"
 OUTPUT_FILE_PATH = "iofiles/output.txt"
 
+
 def f1(x):
     return sp.cos(x) - x
+
 
 def f2(x):
     return x ** 3 - x - 2
 
+
 def f3(x):
     return sp.exp(x) - 3 * x ** 2
 
+
 def f4(x):
     return x ** 2 - 2
+
 
 def f5(x):
     return sp.log(x + 2) - x
@@ -170,7 +175,6 @@ def find_g_function_at_point(expression, point):
 
 def plot_function(f, a, b, num_points=1000, title='График функции', xlabel='x', ylabel='f(x)', line_style='-',
                   line_color='b'):
-
     if not callable(f):
         raise ValueError("Параметр 'f' должен быть вызываемым объектом (функция).")
     if a >= b:
@@ -210,3 +214,44 @@ def bisection_method(function, a, b, tolerance):
         iterations += 1
 
     return root, function(root), iterations
+
+
+def newton_method(function, a, b, tolerance, max_iterations=100):
+    derivative = find_derivative(function)
+    second_derivative = find_derivative(derivative)
+
+    current_guess = a if compute_function_value(function, a) * compute_function_value(second_derivative, a) > 0 else b
+    iterations = 0
+
+    while iterations < max_iterations:
+        f_value = compute_function_value(function, current_guess)
+        f_derivative_value = compute_function_value(derivative, current_guess)
+
+        if f_derivative_value == 0:
+            raise ValueError("Производная равна нулю! Метод не может продолжаться!")
+
+        next_guess = current_guess - f_value / f_derivative_value
+
+        f_next_guess_value = compute_function_value(function, next_guess)
+        f_next_guess_derivative_value = compute_function_value(derivative, next_guess)
+
+        if f_next_guess_derivative_value == 0:
+            raise ValueError("Производная равна нулю! Метод не может продолжаться!")
+
+        if abs(next_guess - current_guess) <= tolerance or abs(
+                f_next_guess_value / f_next_guess_derivative_value) <= tolerance or abs(
+                f_next_guess_value) <= tolerance:
+            return next_guess, f_next_guess_value, iterations
+
+        current_guess = next_guess
+        iterations += 1
+
+    raise ValueError("Метод Ньютона не сошелся за максимальное количество итераций!")
+
+
+def main():
+    print("\t\tЧисленное решение нелинейных уравнений")
+
+
+if __name__ == "__main__":
+    main()
