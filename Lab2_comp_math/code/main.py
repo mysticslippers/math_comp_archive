@@ -148,3 +148,9 @@ def verify_root(expression, a, b):
 
 def find_derivative(expression):
     return sp.diff(expression(variable), variable)
+
+
+def compute_function_value(expression, point):
+    function = expression(variable)
+    value_function = function.evalf(subs={variable: point})
+    return value_function
