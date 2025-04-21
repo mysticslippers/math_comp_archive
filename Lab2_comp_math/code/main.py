@@ -154,3 +154,15 @@ def compute_function_value(expression, point):
     function = expression(variable)
     value_function = function.evalf(subs={variable: point})
     return value_function
+
+
+def find_g_function_at_point(expression, point):
+    value_function = compute_function_value(expression, point)
+    derivative = find_derivative(expression)
+    value_derivative = value_function(derivative)
+
+    if value_derivative == 0:
+        raise ValueError("Производная равна нулю, деление на ноль не допускается!")
+
+    value = point + (-1 / value_derivative) * value_function
+    return value
