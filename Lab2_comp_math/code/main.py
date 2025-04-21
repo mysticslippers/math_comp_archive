@@ -192,3 +192,21 @@ def plot_function(f, a, b, num_points=1000, title='График функции',
     plt.legend()
     plt.grid()
     plt.show()
+
+
+def bisection_method(function, a, b, tolerance):
+    iterations, root = 0, 0
+    while abs(b - a) > tolerance or function((a + b) / 2.0) > 0:
+        root = (a + b) / 2.0
+        f_root = function(root)
+
+        if f_root == 0:
+            return root, f_root, iterations
+        elif function(a) * f_root > 0:
+            a = root
+        else:
+            b = root
+
+        iterations += 1
+
+    return root, function(root), iterations
