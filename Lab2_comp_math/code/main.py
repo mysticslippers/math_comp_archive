@@ -85,3 +85,23 @@ def read_console():
     a, b = read_borders(function_choice)
     tolerance = read_tolerance()
     return function_choice, a, b, tolerance
+
+
+def read_file(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+            function_choice = int(lines[0].strip())
+            a = float(lines[1].strip())
+            b = float(lines[2].strip())
+            tolerance = float(lines[3].strip())
+
+            func = get_function(function_choice)
+            if not verify_root(func, a, b):
+                print("Некорректный ввод! Режим ввода переключён на консоль.")
+                return None
+
+            return function_choice, a, b, tolerance
+    except (ValueError, IndexError, FileNotFoundError) as e:
+        print(f"Ошибка при чтении файла: {e}. Режим ввода переключён на консоль.")
+        return None
