@@ -105,3 +105,20 @@ def read_file(file_path):
     except (ValueError, IndexError, FileNotFoundError) as e:
         print(f"Ошибка при чтении файла: {e}. Режим ввода переключён на консоль.")
         return None
+
+
+def read_input():
+    while True:
+        method_choice = input("Выберите способ ввода данных 'файл'/'клавиатура' (+/-): ").strip().lower()
+
+        if method_choice == '+':
+            function_choice, a, b, tolerance = read_file(INPUT_FILE_PATH)
+            if function_choice is not None:
+                return function_choice, a, b, tolerance
+            print("Ошибка чтения из файла. Переход к вводу с клавиатуры.")
+
+        elif method_choice == '-':
+            return read_console()
+
+        else:
+            print("Некорректный ввод! Попробуйте снова.")
