@@ -122,3 +122,14 @@ def read_input():
 
         else:
             print("Некорректный ввод! Попробуйте снова.")
+
+
+def get_function(choice):
+    functions = {
+        1: f1,
+        2: f2,
+        3: f3,
+        4: f4,
+        5: f5
+    }
+    return functions.get(choice, None)
