@@ -78,3 +78,10 @@ def read_tolerance():
                 print("Некорректный ввод! Пожалуйста, введите значение в диапазоне от 0 до 1.")
         except ValueError:
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
+
+
+def read_console():
+    function_choice = read_function_choice()
+    a, b = read_borders(function_choice)
+    tolerance = read_tolerance()
+    return function_choice, a, b, tolerance
