@@ -217,11 +217,11 @@ def bisection_method(function, a, b, tolerance):
 
 
 def newton_method(function, a, b, tolerance, max_iterations=100):
+    iterations = 0
     derivative = find_derivative(function)
     second_derivative = find_derivative(derivative)
 
     current_guess = a if compute_function_value(function, a) * compute_function_value(second_derivative, a) > 0 else b
-    iterations = 0
 
     while iterations < max_iterations:
         f_value = compute_function_value(function, current_guess)
@@ -249,9 +249,23 @@ def newton_method(function, a, b, tolerance, max_iterations=100):
     raise ValueError("Метод Ньютона не сошелся за максимальное количество итераций!")
 
 
-def main():
-    print("\t\tЧисленное решение нелинейных уравнений")
+def iteration_method(function, initial_approximation, tolerance, max_iterations=100):
+    iterations = 0
+    current_value = initial_approximation
+    derivative = find_derivative(function)
 
+    while iterations < max_iterations:
+        next_value = find_g_function_at_point(function, current_value)
+        f_derivative_value = compute_function_value(derivative, next_value)
 
-if __name__ == "__main__":
-    main()
+        if abs(f_derivative_value) >= 1:
+            return None
+
+        if abs(next_value - current_value) <= tolerance:
+            f_next_value = compute_function_value(function, next_value)
+            return next_value, f_next_value, iterations
+
+        current_value = next_value
+        iterations += 1
+
+    return None
