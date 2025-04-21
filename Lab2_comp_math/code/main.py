@@ -198,6 +198,15 @@ def plot_function(f, a, b, num_points=1000, title='График функции',
     plt.show()
 
 
+def print_output(method, root, func_value, iterations, output_to_file, filename=OUTPUT_FILE_PATH):
+    output_message = f"Method: {method}, Root: {root}, The value of the function at the root: {func_value}, Number of iterations: {iterations}"
+    if output_to_file:
+        with open(filename, 'w') as file:
+            file.write(output_message)
+    else:
+        print(output_message)
+
+
 def bisection_method(function, a, b, tolerance):
     iterations, root = 0, 0
     while abs(b - a) > tolerance or function((a + b) / 2.0) > 0:
