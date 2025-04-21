@@ -133,3 +133,14 @@ def get_function(choice):
         5: f5
     }
     return functions.get(choice, None)
+
+
+def verify_root(expression, a, b):
+    fa, fb = expression(a), expression(b)
+
+    if fa * fb > 0:
+        print("На заданном интервале нет корня или несколько корней!")
+        return False
+
+    print(f"Есть корень уравнения на интервале [{a}, {b}].")
+    return True
