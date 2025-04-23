@@ -179,8 +179,7 @@ def find_second_derivative(expression):
 
 
 def compute_function_value(expression, point):
-    function = expression(variable)
-    value_function = function.evalf(subs={variable: point})
+    value_function = expression.evalf(subs={variable: point})
     return value_function
 
 
