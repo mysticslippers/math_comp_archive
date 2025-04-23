@@ -300,6 +300,7 @@ def iteration_method(function, initial_approximation, tolerance, max_iterations=
 
     return None, None, None
 
+
 def main():
     print("\t\tЧисленное решение нелинейных уравнений")
     function_choice, a, b, tolerance = read_input()
@@ -325,13 +326,16 @@ def main():
             if method_choice == 3:
                 initial_approximation = read_initial_approximation()
                 root, f_value, iterations = iteration_method(function, initial_approximation, tolerance)
+                if root is None:
+                    print("Не выполняется условие сходимости!")
+                    continue
             else:
                 root, f_value, iterations = method_map[method_choice](function, a, b, tolerance)
 
             output_to_file = input("Вывести результаты в файл? (y/n): ").strip().lower() == 'y'
             print_output(method_choice, root, f_value, iterations, output_to_file)
 
-            plot_function(function, a, b)
+            plot(function, a, b)
             break
 
         except ValueError:
