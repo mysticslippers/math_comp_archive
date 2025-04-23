@@ -1,0 +1,1 @@
+Method: 1, Root: 0.7391357421875, The value of the function at the root: -8.470073137478717e-05, Number of iterations: 13
