@@ -184,9 +184,9 @@ def compute_function_value(expression, point):
 
 
 def find_g_function_at_point(expression, point):
-    value_function = compute_function_value(expression, point)
+    value_function = compute_function_value(expression(variable), point)
     derivative = find_derivative(expression)
-    value_derivative = value_function(derivative)
+    value_derivative = compute_function_value(derivative, point)
 
     if value_derivative == 0:
         raise ValueError("Производная равна нулю, деление на ноль не допускается!")
