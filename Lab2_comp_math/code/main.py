@@ -279,7 +279,7 @@ def newton_method(function, a, b, tolerance, max_iterations=10000):
     raise ValueError("Метод Ньютона не сошелся за максимальное количество итераций!")
 
 
-def iteration_method(function, initial_approximation, tolerance, max_iterations=100):
+def iteration_method(function, initial_approximation, tolerance, max_iterations=10000):
     iterations = 0
     current_value = initial_approximation
     derivative = find_derivative(function)
@@ -289,17 +289,16 @@ def iteration_method(function, initial_approximation, tolerance, max_iterations=
         f_derivative_value = compute_function_value(derivative, next_value)
 
         if abs(f_derivative_value) >= 1:
-            return None
+            return None, None, None
 
         if abs(next_value - current_value) <= tolerance:
-            f_next_value = compute_function_value(function, next_value)
+            f_next_value = compute_function_value(function(variable), next_value)
             return next_value, f_next_value, iterations
 
         current_value = next_value
         iterations += 1
 
-    return None
-
+    return None, None, None
 
 def main():
     print("\t\tЧисленное решение нелинейных уравнений")
