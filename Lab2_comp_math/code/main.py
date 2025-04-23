@@ -148,6 +148,11 @@ def get_function(choice):
     return functions.get(choice, None)
 
 
+def is_logarithmic(expression):
+    function = expression(variable)
+    return function.has(sp.log)
+
+
 def verify_root(expression, a, b):
     fa, fb = expression(a), expression(b)
 
