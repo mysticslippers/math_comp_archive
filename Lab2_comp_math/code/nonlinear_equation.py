@@ -295,3 +295,44 @@ def iteration_method(function, initial_approximation, tolerance, max_iterations=
         iterations += 1
 
     return None, None, None
+
+
+def solve_nonlinear_equation():
+    print("\t\tЧисленное решение нелинейных уравнений")
+    function_choice, a, b, tolerance = read_input()
+    function = get_function(function_choice)
+
+    method_map = {
+        1: bisection_method,
+        2: newton_method,
+        3: iteration_method
+    }
+
+    print("Выберите метод:")
+    for key, method in method_map.items():
+        print(f"{key}. Метод {method.__name__.replace('_', ' ').capitalize()}")
+
+    while True:
+        try:
+            method_choice = int(input("Ваш выбор: "))
+            if method_choice not in method_map:
+                print("Неверный выбор метода! Попробуйте снова.")
+                continue
+
+            if method_choice == 3:
+                initial_approximation = read_initial_approximation()
+                root, f_value, iterations = iteration_method(function, initial_approximation, tolerance)
+                if root is None:
+                    print("Не выполняется условие сходимости!")
+                    continue
+            else:
+                root, f_value, iterations = method_map[method_choice](function, a, b, tolerance)
+
+            output_to_file = input("Вывести результаты в файл? (y/n): ").strip().lower() == 'y'
+            print_output(method_choice, root, f_value, iterations, output_to_file)
+
+            plot(function, a, b)
+            break
+
+        except ValueError:
+            print("Ошибка ввода! Пожалуйста, введите числовое значение.")
