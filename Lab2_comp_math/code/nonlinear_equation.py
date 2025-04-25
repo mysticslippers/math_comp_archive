@@ -162,3 +162,7 @@ def verify_root(expression, a, b):
 
     print(f"Есть корень уравнения на интервале [{a}, {b}].")
     return True
+
+
+def find_derivative(expression):
+    return sp.diff(expression(variable), variable)
