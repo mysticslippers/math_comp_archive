@@ -213,3 +213,12 @@ def plot(function, a, b, num_points=1000, title='График функции', x
     plt.legend()
     plt.grid()
     plt.show()
+
+
+def print_output(method, root, func_value, iterations, output_to_file, filename=OUTPUT_FILE_PATH):
+    output_message = f"Method: {method}, Root: {root}, The value of the function at the root: {func_value}, Number of iterations: {iterations}"
+    if output_to_file:
+        with open(filename, 'w') as file:
+            file.write(output_message)
+    else:
+        print(output_message)
