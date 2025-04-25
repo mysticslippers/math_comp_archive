@@ -146,3 +146,8 @@ def plot(system, left_border, right_border):
     plt.grid()
     plt.legend()
     plt.show()
+
+
+def max_derivative(system_derivative, x):
+    J = system_derivative(x)
+    return np.max(np.abs(J))
