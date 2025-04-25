@@ -273,3 +273,25 @@ def newton_method(function, a, b, tolerance, max_iterations=10000):
         iterations += 1
 
     raise ValueError("Метод Ньютона не сошелся за максимальное количество итераций!")
+
+
+def iteration_method(function, initial_approximation, tolerance, max_iterations=10000):
+    iterations = 0
+    current_value = initial_approximation
+    derivative = find_derivative(function)
+
+    while iterations < max_iterations:
+        next_value = find_g_function_at_point(function, current_value)
+        f_derivative_value = compute_function_value(derivative, next_value)
+
+        if abs(f_derivative_value) >= 1:
+            return None, None, None
+
+        if abs(next_value - current_value) <= tolerance:
+            f_next_value = compute_function_value(function(variable), next_value)
+            return next_value, f_next_value, iterations
+
+        current_value = next_value
+        iterations += 1
+
+    return None, None, None
