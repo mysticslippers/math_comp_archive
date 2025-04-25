@@ -35,3 +35,17 @@ def list_functions():
         "5. log(x + 2) - x"
     ]
     print("\n".join(functions))
+
+
+def read_function_choice(prompt="Выберите номер функции (1-5): "):
+    list_functions()
+
+    while True:
+        try:
+            function_choice = int(input(prompt))
+            if 1 <= function_choice <= 5:
+                return function_choice
+            else:
+                print("Некорректный выбор функции! Попробуйте снова.")
+        except ValueError:
+            print("Ошибка ввода! Пожалуйста, введите числовое значение.")
