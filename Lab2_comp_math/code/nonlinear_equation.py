@@ -49,3 +49,20 @@ def read_function_choice(prompt="Выберите номер функции (1-5
                 print("Некорректный выбор функции! Попробуйте снова.")
         except ValueError:
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
+
+
+def read_borders(function_choice):
+    try:
+        a = float(input("Введите левую границу интервала (a): "))
+        b = float(input("Введите правую границу интервала (b): "))
+
+        func = get_function(function_choice)
+
+        if not verify_root(func, a, b):
+            print("Некорректный ввод! Попробуйте снова.")
+            return read_borders(function_choice)
+
+        return a, b
+    except ValueError:
+        print("Ошибка ввода! Пожалуйста, введите числовые значения.")
+        return read_borders(function_choice)
