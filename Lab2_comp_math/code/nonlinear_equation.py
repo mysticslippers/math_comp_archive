@@ -222,3 +222,21 @@ def print_output(method, root, func_value, iterations, output_to_file, filename=
             file.write(output_message)
     else:
         print(output_message)
+
+
+def bisection_method(function, a, b, tolerance):
+    iterations, root = 0, 0
+    while abs(b - a) > tolerance or function((a + b) / 2.0) > 0:
+        root = (a + b) / 2.0
+        f_root = function(root)
+
+        if f_root == 0:
+            return root, f_root, iterations
+        elif function(a) * f_root > 0:
+            a = root
+        else:
+            b = root
+
+        iterations += 1
+
+    return root, function(root), iterations
