@@ -24,3 +24,14 @@ def f4(x):
 
 def f5(x):
     return sp.log(x + 2) - x
+
+
+def list_functions():
+    functions = [
+        "1. cos(x) - x",
+        "2. x^3 - x - 2",
+        "3. exp(x) - 3*x^2",
+        "4. x^2 - 2",
+        "5. log(x + 2) - x"
+    ]
+    print("\n".join(functions))
