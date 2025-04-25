@@ -180,3 +180,21 @@ def simple_iteration_system(phi, initial_approximation, tolerance, max_iteration
         iterations += 1
 
     return x_current, iterations, residuals
+
+
+def solve_system_nonlinear_equations():
+    print("\t\tЧисленное решение системы нелинейных уравнений")
+    system_choice, a, b, tolerance, iterations = read_input()
+    system, phi, derivative = get_system(system_choice)
+    initial_approximation = (a, b)
+
+    if check_convergence(derivative, initial_approximation):
+        solution, iterations, residuals = simple_iteration_system(phi, initial_approximation, tolerance, iterations)
+        plot(system, initial_approximation)
+
+        print(f"Решение: x1 = {solution[0]}, x2 = {solution[1]}")
+        print(f"Количество итераций: {iterations}")
+        print(f"Вектор погрешностей: {residuals}")
+
+        residual = np.linalg.norm(phi(solution))
+        print(f"Нормированное значение функции в найденной точке: {residual}")
