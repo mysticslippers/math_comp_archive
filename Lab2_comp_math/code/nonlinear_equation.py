@@ -66,3 +66,15 @@ def read_borders(function_choice):
     except ValueError:
         print("Ошибка ввода! Пожалуйста, введите числовые значения.")
         return read_borders(function_choice)
+
+
+def read_tolerance(prompt="Введите допустимую погрешность (0 < tolerance <= 1): "):
+    while True:
+        try:
+            tolerance = float(input(prompt))
+            if 0 < tolerance <= 1:
+                return tolerance
+            else:
+                print("Некорректный ввод! Пожалуйста, введите значение в диапазоне от 0 до 1.")
+        except ValueError:
+            print("Ошибка ввода! Пожалуйста, введите числовое значение.")
