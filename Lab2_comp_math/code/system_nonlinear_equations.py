@@ -42,3 +42,15 @@ def derivative_system2(x):
         [0, -x[0] / (np.sqrt(4 - x[0]**2))],
         [1, 0]
     ])
+
+
+def list_systems():
+    systems = [
+        "1. Система 1:",
+        "   sin(x) + y = 1",
+        "   cos(y) + x = 1\n",
+        "2. Система 2:",
+        "   x^2 + y^2 = 4",
+        "   x - y = 1"
+    ]
+    print("".join(systems))
