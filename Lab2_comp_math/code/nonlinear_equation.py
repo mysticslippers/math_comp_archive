@@ -240,3 +240,36 @@ def bisection_method(function, a, b, tolerance):
         iterations += 1
 
     return root, function(root), iterations
+
+
+def newton_method(function, a, b, tolerance, max_iterations=10000):
+    iterations = 0
+    derivative = find_derivative(function)
+    second_derivative = find_second_derivative(function)
+
+    current_guess = a if compute_function_value(function(variable), a) * compute_function_value(second_derivative, a) > 0 else b
+
+    while iterations < max_iterations:
+        f_value = compute_function_value(function(variable), current_guess)
+        f_derivative_value = compute_function_value(derivative, current_guess)
+
+        if f_derivative_value == 0:
+            raise ValueError("Производная равна нулю! Метод не может продолжаться!")
+
+        next_guess = current_guess - (f_value / f_derivative_value)
+
+        f_next_guess_value = compute_function_value(function(variable), next_guess)
+        f_next_guess_derivative_value = compute_function_value(derivative, next_guess)
+
+        if f_next_guess_derivative_value == 0:
+            raise ValueError("Производная равна нулю! Метод не может продолжаться!")
+
+        if abs(next_guess - current_guess) <= tolerance or abs(
+                f_next_guess_value / f_next_guess_derivative_value) <= tolerance or abs(
+                f_next_guess_value) <= tolerance:
+            return next_guess, f_next_guess_value, iterations
+
+        current_guess = next_guess
+        iterations += 1
+
+    raise ValueError("Метод Ньютона не сошелся за максимальное количество итераций!")
