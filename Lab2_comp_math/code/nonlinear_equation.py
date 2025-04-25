@@ -166,3 +166,8 @@ def verify_root(expression, a, b):
 
 def find_derivative(expression):
     return sp.diff(expression(variable), variable)
+
+
+def find_second_derivative(expression):
+    first_derivative = sp.diff(expression(variable), variable)
+    return sp.diff(first_derivative, variable)
