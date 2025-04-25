@@ -151,3 +151,13 @@ def plot(system, left_border, right_border):
 def max_derivative(system_derivative, x):
     J = system_derivative(x)
     return np.max(np.abs(J))
+
+
+def check_convergence(system_derivative, x):
+    q = max_derivative(system_derivative, x)
+    print(f"Коэффициент сжатия q = {q}")
+    if q >= 1:
+        print("Система не удовлетворяет достаточным условиям сходимости!")
+        return False
+    else:
+        return True
