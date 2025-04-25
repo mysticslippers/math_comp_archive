@@ -161,3 +161,22 @@ def check_convergence(system_derivative, x):
         return False
     else:
         return True
+
+
+def simple_iteration_system(phi, initial_approximation, tolerance, max_iterations):
+    x_current = initial_approximation
+    iterations = 0
+    residuals = []
+
+    for i in range(max_iterations):
+        x_next = phi(x_current)
+        error = np.linalg.norm(x_next - x_current)
+        residuals.append(error)
+
+        if error < tolerance:
+            return x_next, i + 1, residuals
+
+        x_current = x_next
+        iterations += 1
+
+    return x_current, iterations, residuals
