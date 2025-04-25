@@ -188,3 +188,28 @@ def find_g_function_at_point(expression, point):
 
     value = point + (-1 / value_derivative) * value_function
     return value
+
+
+def plot(function, a, b, num_points=1000, title='График функции', xlabel='x', ylabel='f(x)', line_style='-',
+                  line_color='b'):
+    if not callable(function):
+        raise ValueError("Параметр 'f' должен быть вызываемым объектом (функция).")
+    if a >= b:
+        raise ValueError("Параметр 'a' должен быть меньше параметра 'b'.")
+
+    points = np.linspace(a, b, num_points)
+
+    try:
+        y = np.array([compute_function_value(function(variable), point) for point in points])
+    except Exception as e:
+        raise RuntimeError(f"Ошибка при вычислении значений функции: {e}")
+
+    plt.plot(points, y, label='Функция', linestyle=line_style, color=line_color)
+    plt.axhline(0, color='black', lw=0.5, ls='--')
+    plt.axvline(0, color='black', lw=0.5, ls='--')
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.grid()
+    plt.show()
