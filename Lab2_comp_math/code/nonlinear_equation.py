@@ -146,3 +146,19 @@ def get_function(choice):
 def is_logarithmic(expression):
     function = expression(variable)
     return function.has(sp.log)
+
+
+def verify_root(expression, a, b):
+    if is_logarithmic(expression):
+        if a <= -2 or b <= -2:
+            print(f"Интервал [{a}, {b}] содержит значения, для которых логарифм не определен.")
+            return False
+
+    fa, fb = expression(a), expression(b)
+
+    if fa * fb > 0:
+        print("На заданном интервале нет корня или несколько корней!")
+        return False
+
+    print(f"Есть корень уравнения на интервале [{a}, {b}].")
+    return True
