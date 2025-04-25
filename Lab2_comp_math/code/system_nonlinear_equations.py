@@ -129,3 +129,20 @@ def read_input():
     tolerance = read_tolerance()
     iterations = read_number_iterations()
     return system_choice, a, b, tolerance, iterations
+
+
+def plot(system, left_border, right_border):
+    x_vals = np.linspace(left_border, right_border, 400)
+    y_vals1 = [system([x, 0])[0] for x in x_vals]
+    y_vals2 = [system([0, y])[1] for y in x_vals]
+
+    plt.plot(x_vals, y_vals1, label='f1(x, 0)')
+    plt.plot(x_vals, y_vals2, label='f2(0, y)')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.title('График функций')
+    plt.axhline(0, color='black', lw=0.5, ls='--')
+    plt.axvline(0, color='black', lw=0.5, ls='--')
+    plt.grid()
+    plt.legend()
+    plt.show()
