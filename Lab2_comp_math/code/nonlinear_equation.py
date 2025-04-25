@@ -171,3 +171,8 @@ def find_derivative(expression):
 def find_second_derivative(expression):
     first_derivative = sp.diff(expression(variable), variable)
     return sp.diff(first_derivative, variable)
+
+
+def compute_function_value(expression, point):
+    value_function = expression.evalf(subs={variable: point})
+    return value_function
