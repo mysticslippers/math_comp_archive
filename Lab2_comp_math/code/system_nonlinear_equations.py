@@ -54,3 +54,21 @@ def list_systems():
         "   x - y = 1"
     ]
     print("".join(systems))
+
+
+def get_system(choice):
+    systems = {
+        1: system1,
+        2: system2
+    }
+
+    phis = {
+        1: phi1,
+        2: phi2
+    }
+
+    derivative_systems = {
+        1: derivative_system1,
+        2: derivative_system2
+    }
+    return systems.get(choice, None), phis.get(choice, None), derivative_systems.get(choice, None)
