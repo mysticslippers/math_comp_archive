@@ -141,3 +141,8 @@ def get_function(choice):
         5: f5
     }
     return functions.get(choice, None)
+
+
+def is_logarithmic(expression):
+    function = expression(variable)
+    return function.has(sp.log)
