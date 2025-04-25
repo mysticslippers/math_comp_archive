@@ -72,3 +72,17 @@ def get_system(choice):
         2: derivative_system2
     }
     return systems.get(choice, None), phis.get(choice, None), derivative_systems.get(choice, None)
+
+
+def read_system_choice(prompt="Выберите систему уравнений: (1) первая система (2) вторая система"):
+    list_systems()
+
+    while True:
+        try:
+            system_choice = int(input(prompt))
+            if 1 <= system_choice <= 2:
+                return system_choice
+            else:
+                print("Некорректный выбор функции! Попробуйте снова.")
+        except ValueError:
+            print("Ошибка ввода! Пожалуйста, введите числовое значение.")
