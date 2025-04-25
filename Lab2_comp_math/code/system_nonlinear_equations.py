@@ -121,3 +121,11 @@ def read_number_iterations(prompt="Введите максимальное ко�
                 print("Некорректный ввод! Пожалуйста, введите значение больше 0.")
         except ValueError:
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
+
+
+def read_input():
+    system_choice = read_system_choice()
+    a, b = read_borders()
+    tolerance = read_tolerance()
+    iterations = read_number_iterations()
+    return system_choice, a, b, tolerance, iterations
