@@ -276,15 +276,39 @@ def newton_method(function, a, b, tolerance, max_iterations=10000):
 
 def iteration_method(function, initial_approximation, tolerance, max_iterations=10000):
     iterations = 0
-    current_value = initial_approximation
+    a, b = initial_approximation[0], initial_approximation[1]
     derivative = find_derivative(function)
+    print(f"\nПроизводная функции: {derivative}")
+    second_derivative = find_second_derivative(function)
+    print(f"Вторая производная функции: {second_derivative}\n")
+
+    lamda = round(find_lamda_coefficient(function, initial_approximation), 2)
+    print(f"Коэффициент лямбда: {lamda}\n")
+
+    def phi_function(x):
+        function_value = compute_function_value(function(variable), x)
+        return x + lamda * function_value
+
+
+    def check_convergence():
+        phi_derivative_value_left = abs(1 + lamda * compute_function_value(derivative, a))
+        print(f"Значение производной функции phi'(x) на левой границе: {phi_derivative_value_left}")
+
+        phi_derivative_value_right = abs(1 + lamda * compute_function_value(derivative, b))
+        print(f"Значение производной функции phi'(x) на правой границе: {phi_derivative_value_right}")
+
+        q = phi_derivative_value_left if (phi_derivative_value_left > phi_derivative_value_right) else phi_derivative_value_right
+        return q >= 1
+
+
+    if check_convergence():
+        return None, None, None
+
+    current_value = a if compute_function_value(function(variable), a) * compute_function_value(second_derivative, a) > 0 else b
+    print(f"x_0 = {current_value}")
 
     while iterations < max_iterations:
-        next_value = find_g_function_at_point(function, current_value)
-        f_derivative_value = compute_function_value(derivative, next_value)
-
-        if abs(f_derivative_value) >= 1:
-            return None, None, None
+        next_value = phi_function(current_value)
 
         if abs(next_value - current_value) <= tolerance:
             f_next_value = compute_function_value(function(variable), next_value)
@@ -294,7 +318,6 @@ def iteration_method(function, initial_approximation, tolerance, max_iterations=
         iterations += 1
 
     return None, None, None
-
 
 def solve_nonlinear_equation():
     print("\t\tЧисленное решение нелинейных уравнений")
