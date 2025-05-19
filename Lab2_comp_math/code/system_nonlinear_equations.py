@@ -47,8 +47,8 @@ def derivative_phi_system2(x):
 def list_systems():
     systems = [
         "1. Система 1:",
-        "   sin(x) + y = 1",
-        "   cos(y) + x = 1\n",
+        "   0.1 * x[0]^2 + x[0] + 0.2 * x[1]^2 = 0.3",
+        "   0.2 * x[1]^2 + x[1] + 0.1 * x[0] * x[1] = 0.7\n",
         "2. Система 2:",
         "   x^2 + y^2 = 4",
         "   x - y = 1"
