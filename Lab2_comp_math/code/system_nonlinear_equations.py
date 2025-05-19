@@ -4,22 +4,22 @@ import numpy as np
 
 def system1(x):
     return np.array([
-        -0.1 + 0.1 * x[0]**2 + x[0] + 0.2 * x[1]**2,
-        0.2 * x[1]**2 + x[1] + 0.1 * x[0] * x[1] - 0.2
+        -0.3 + 0.1 * x[0]**2 + x[0] + 0.2 * x[1]**2,
+        0.2 * x[1]**2 + x[1] + 0.1 * x[0] * x[1] - 0.7
     ])
 
 
 def phi1(x):
     return np.array([
         0.3 - 0.1 * x[0]**2 - 0.2 * x[1]**2,
-        0.7 - 0.2 * x[0]**2 - 0.1 * x[0] * x[1],
+        -0.2 * x[1]**2 - 0.1 * x[0] * x[1] + 0.7
     ])
 
 
 def derivative_phi_system1(x):
     return np.array([
         [-0.2 * x[0], -0.4 * x[1]],
-        [-0.4 * x[0] - 0.1 * x[1], -0.1 * x[0]],
+        [-0.4 * x[0] - 0.1 * x[1], -0.1 * x[0]]
     ])
 
 
@@ -68,13 +68,13 @@ def get_system(choice):
     }
 
     derivative_systems = {
-        1: derivative_system1,
-        2: derivative_system2
+        1: derivative_phi_system1,
+        2: derivative_phi_system2
     }
     return systems.get(choice, None), phis.get(choice, None), derivative_systems.get(choice, None)
 
 
-def read_system_choice(prompt="Выберите систему уравнений: (1) первая система (2) вторая система"):
+def read_system_choice(prompt="Выберите систему уравнений: (1) первая система (2) вторая система: "):
     list_systems()
 
     while True:
@@ -100,10 +100,10 @@ def read_initial_approximation(prompt="\nВведите начальные пр�
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
 
 
-def read_tolerance(prompt="Введите допустимую погрешность (0 < tolerance <= 1): "):
+def read_tolerance(prompt="\nВведите допустимую погрешность (0 < tolerance <= 1): "):
     while True:
         try:
-            tolerance = float(input(prompt))
+            tolerance = round(float(input(prompt)), 2)
             if 0 < tolerance <= 1:
                 return tolerance
             else:
@@ -112,7 +112,7 @@ def read_tolerance(prompt="Введите допустимую погрешно�
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
 
 
-def read_number_iterations(prompt="Введите максимальное количество итераций: "):
+def read_number_iterations(prompt="\nВведите максимальное количество итераций: "):
     while True:
         try:
             number_iterations = int(input(prompt))
@@ -165,7 +165,7 @@ def plot(system, initial_approximation, x1_range=(-2, 2), x2_range=(-2, 2), reso
 
 def check_convergence(system_derivative, x):
     q = np.max(np.abs((system_derivative(x))))
-    print(f"Коэффициент сходимости q = {q}")
+    print(f"Коэффициент сходимости q = {q}\n")
     if q >= 1:
         print("Система не удовлетворяет достаточному условию сходимости!")
         return False
@@ -180,18 +180,26 @@ def simple_iteration_system(system, phi, initial_approximation, tolerance, max_i
 
     for i in range(max_iterations):
         x_next = phi(x_current)
+        print(x_next)
+
         residuals.append(system(x_next))
 
         diff_x0 = abs(x_next[0] - x_current[0])
+        print(f"Разница между корнями x_0: {diff_x0}")
         diff_x1 = abs(x_next[1] - x_current[1])
+        print(f"Разница между корнями x_1: {diff_x1}")
 
         maximum_diff = diff_x0 if diff_x0 > diff_x1 else diff_x1
-        print(f"Разница между корнями: {maximum_diff}")
-        if maximum_diff < tolerance:
+        print(f"Разница между корнями: {maximum_diff}\n")
+
+        system_next_value = system(x_next)
+        if maximum_diff < tolerance and (abs(system_next_value[0])) < tolerance and (abs(system_next_value[1])) < tolerance:
             return x_next, iterations, residuals
 
         x_current = x_next
         iterations += 1
+
+    print(x_current)
     return x_current, iterations, residuals
 
 
