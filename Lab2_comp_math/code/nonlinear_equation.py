@@ -80,14 +80,6 @@ def read_tolerance(prompt="Введите допустимую погрешно�
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
 
 
-def read_initial_approximation(prompt="Введите допустимое начальное приближение: "):
-    while True:
-        try:
-            return float(input(prompt))
-        except ValueError:
-            print("Ошибка ввода! Пожалуйста, введите числовое значение.")
-
-
 def read_console():
     function_choice = read_function_choice()
     a, b = read_borders(function_choice)
