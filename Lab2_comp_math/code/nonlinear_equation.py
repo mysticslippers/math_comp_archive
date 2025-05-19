@@ -170,16 +170,22 @@ def compute_function_value(expression, point):
     return value_function
 
 
-def find_g_function_at_point(expression, point):
-    value_function = compute_function_value(expression(variable), point)
+def find_lamda_coefficient(expression, borders):
     derivative = find_derivative(expression)
-    value_derivative = compute_function_value(derivative, point)
 
-    if value_derivative == 0:
+    value_derivative_at_left = round(abs(compute_function_value(derivative, borders[0])), 2)
+    print(f"Значение производной функции f'(x) на левой границе: {value_derivative_at_left}")
+
+    value_derivative_at_right = round(abs(compute_function_value(derivative, borders[1])), 2)
+    print(f"Значение производной функции f'(x) на правой границе: {value_derivative_at_right}")
+
+    if value_derivative_at_left == 0 or value_derivative_at_right == 0:
         raise ValueError("Производная равна нулю, деление на ноль не допускается!")
 
-    value = point + (-1 / value_derivative) * value_function
-    return value
+
+    maximum = value_derivative_at_left if (value_derivative_at_left > value_derivative_at_right) else value_derivative_at_right
+
+    return -1 / maximum
 
 
 def plot(function, a, b, num_points=1000, title='График функции', xlabel='x', ylabel='f(x)', line_style='-',
