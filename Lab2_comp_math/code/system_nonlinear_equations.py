@@ -163,16 +163,11 @@ def plot(system, initial_approximation, x1_range=(-2, 2), x2_range=(-2, 2), reso
     plt.show()
 
 
-def max_derivative(system_derivative, x):
-    J = system_derivative(x)
-    return np.max(np.abs(J))
-
-
 def check_convergence(system_derivative, x):
-    q = max_derivative(system_derivative, x)
-    print(f"Коэффициент сжатия q = {q}")
+    q = np.max(np.abs((system_derivative(x))))
+    print(f"Коэффициент сходимости q = {q}")
     if q >= 1:
-        print("Система не удовлетворяет достаточным условиям сходимости!")
+        print("Система не удовлетворяет достаточному условию сходимости!")
         return False
     else:
         return True
