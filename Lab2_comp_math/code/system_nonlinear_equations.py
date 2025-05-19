@@ -133,18 +133,31 @@ def read_input():
     return system_choice, initial_approximation, tolerance, iterations
 
 
-def plot(system, left_border, right_border):
-    x_vals = np.linspace(left_border, right_border, 400)
-    y_vals1 = [system([x, 0])[0] for x in x_vals]
-    y_vals2 = [system([0, y])[1] for y in x_vals]
+def plot(system, initial_approximation, x1_range=(-2, 2), x2_range=(-2, 2), resolution=100):
+    x1_values = np.linspace(x1_range[0], x1_range[1], resolution)
+    x2_values = np.linspace(x2_range[0], x2_range[1], resolution)
 
-    plt.plot(x_vals, y_vals1, label='f1(x, 0)')
-    plt.plot(x_vals, y_vals2, label='f2(0, y)')
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.title('График функций')
-    plt.axhline(0, color='black', lw=0.5, ls='--')
-    plt.axvline(0, color='black', lw=0.5, ls='--')
+    X1, X2 = np.meshgrid(x1_values, x2_values)
+    Z1 = np.zeros_like(X1)
+    Z2 = np.zeros_like(X2)
+
+    for i in range(X1.shape[0]):
+        for j in range(X1.shape[1]):
+            x = np.array([X1[i, j], X2[i, j]])
+            Z = system(x)
+            Z1[i, j] = Z[0]
+            Z2[i, j] = Z[1]
+
+    plt.figure(figsize=(10, 6))
+    plt.contour(X1, X2, Z1, levels=[0], colors='r', linewidths=2)
+    plt.contour(X1, X2, Z2, levels=[0], colors='b', linewidths=2)
+    plt.scatter(*initial_approximation, color='black', label='Начальное приближение', zorder=5)
+
+    plt.title("График системы уравнений")
+    plt.xlabel("x1")
+    plt.ylabel("x2")
+    plt.axhline(0, color='grey', lw=0.5, ls='--')
+    plt.axvline(0, color='grey', lw=0.5, ls='--')
     plt.grid()
     plt.legend()
     plt.show()
