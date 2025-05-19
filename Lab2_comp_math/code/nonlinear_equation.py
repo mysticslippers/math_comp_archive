@@ -6,6 +6,7 @@ variable = sp.symbols('x')
 INPUT_FILE_PATH = "iofiles/input.txt"
 OUTPUT_FILE_PATH = "iofiles/output.txt"
 
+
 def f1(x):
     return sp.cos(x) - x
 
@@ -37,7 +38,7 @@ def list_functions():
     print("\n".join(functions))
 
 
-def read_function_choice(prompt="Выберите номер функции (1-5): "):
+def read_function_choice(prompt="\nВыберите номер функции (1-5): "):
     list_functions()
 
     while True:
@@ -53,7 +54,7 @@ def read_function_choice(prompt="Выберите номер функции (1-5
 
 def read_borders(function_choice):
     try:
-        a = float(input("Введите левую границу интервала (a): "))
+        a = float(input("\nВведите левую границу интервала (a): "))
         b = float(input("Введите правую границу интервала (b): "))
 
         func = get_function(function_choice)
@@ -68,7 +69,7 @@ def read_borders(function_choice):
         return read_borders(function_choice)
 
 
-def read_tolerance(prompt="Введите допустимую погрешность (0 < tolerance <= 1): "):
+def read_tolerance(prompt="\nВведите допустимую погрешность (0 < tolerance <= 1): "):
     while True:
         try:
             tolerance = float(input(prompt))
@@ -301,17 +302,17 @@ def iteration_method(function, initial_approximation, tolerance, max_iterations=
         return q >= 1
 
 
-    if check_convergence():
-        return None, None, None
+    check_convergence()
+
 
     current_value = a if compute_function_value(function(variable), a) * compute_function_value(second_derivative, a) > 0 else b
     print(f"x_0 = {current_value}")
 
     while iterations < max_iterations:
         next_value = phi_function(current_value)
+        f_next_value = compute_function_value(function(variable), next_value)
 
-        if abs(next_value - current_value) <= tolerance:
-            f_next_value = compute_function_value(function(variable), next_value)
+        if abs(f_next_value) <= tolerance:
             return next_value, f_next_value, iterations
 
         current_value = next_value
