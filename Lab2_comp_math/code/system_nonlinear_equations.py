@@ -126,10 +126,11 @@ def read_number_iterations(prompt="Введите максимальное ко�
 
 def read_input():
     system_choice = read_system_choice()
-    a, b = read_borders()
+    x1, x2 = read_initial_approximation()
+    initial_approximation = (x1, x2)
     tolerance = read_tolerance()
     iterations = read_number_iterations()
-    return system_choice, a, b, tolerance, iterations
+    return system_choice, initial_approximation, tolerance, iterations
 
 
 def plot(system, left_border, right_border):
