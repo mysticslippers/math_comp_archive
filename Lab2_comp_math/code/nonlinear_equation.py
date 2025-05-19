@@ -224,11 +224,11 @@ def print_output(method, root, func_value, iterations, output_to_file, filename=
 
 def bisection_method(function, a, b, tolerance):
     iterations, root = 0, 0
-    while abs(b - a) > tolerance or function((a + b) / 2.0) > 0:
+    while True:
         root = (a + b) / 2.0
         f_root = function(root)
 
-        if f_root == 0:
+        if abs(f_root) <= tolerance:
             return root, f_root, iterations
         elif function(a) * f_root > 0:
             a = root
@@ -236,8 +236,6 @@ def bisection_method(function, a, b, tolerance):
             b = root
 
         iterations += 1
-
-    return root, function(root), iterations
 
 
 def newton_method(function, a, b, tolerance, max_iterations=10000):
