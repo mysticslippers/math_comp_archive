@@ -146,7 +146,7 @@ def verify_root(expression, a, b):
             print(f"Интервал [{a}, {b}] содержит значения, для которых логарифм не определен.")
             return False
 
-    fa, fb = expression(a), expression(b)
+    fa, fb = compute_function_value(expression(variable), a), compute_function_value(expression(variable), b)
 
     if fa * fb > 0:
         print("На заданном интервале нет корня или несколько корней!")
