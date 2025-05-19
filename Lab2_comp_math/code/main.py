@@ -7,7 +7,7 @@ from system_nonlinear_equations import solve_system_nonlinear_equations
 
 
 def main():
-    print("\t\t\tЛабораторная работа №2")
+    print("\t\t\t\t\t\tЛабораторная работа №2")
     while True:
         try:
             choice = input("Вы хотите решить 'нелинейное уравнение'/'систему нелинейных уравнений' (+/-): ").strip()
