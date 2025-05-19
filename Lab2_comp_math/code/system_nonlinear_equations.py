@@ -173,22 +173,25 @@ def check_convergence(system_derivative, x):
         return True
 
 
-def simple_iteration_system(phi, initial_approximation, tolerance, max_iterations):
-    x_current = initial_approximation
+def simple_iteration_system(system, phi, initial_approximation, tolerance, max_iterations):
     iterations = 0
     residuals = []
+    x_current = initial_approximation
 
     for i in range(max_iterations):
         x_next = phi(x_current)
-        error = np.linalg.norm(x_next - x_current)
-        residuals.append(error)
+        residuals.append(system(x_next))
 
-        if error < tolerance:
-            return x_next, i + 1, residuals
+        diff_x0 = abs(x_next[0] - x_current[0])
+        diff_x1 = abs(x_next[1] - x_current[1])
+
+        maximum_diff = diff_x0 if diff_x0 > diff_x1 else diff_x1
+        print(f"Разница между корнями: {maximum_diff}")
+        if maximum_diff < tolerance:
+            return x_next, iterations, residuals
 
         x_current = x_next
         iterations += 1
-
     return x_current, iterations, residuals
 
 
