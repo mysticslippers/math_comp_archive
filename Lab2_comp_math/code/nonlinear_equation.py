@@ -241,9 +241,12 @@ def bisection_method(function, a, b, tolerance):
 def newton_method(function, a, b, tolerance, max_iterations=10000):
     iterations = 0
     derivative = find_derivative(function)
+    print(f"\nПроизводная функции: {derivative}")
     second_derivative = find_second_derivative(function)
+    print(f"Вторая производная функции: {second_derivative}\n")
 
     current_guess = a if compute_function_value(function(variable), a) * compute_function_value(second_derivative, a) > 0 else b
+    print(f"x_0 = {current_guess}")
 
     while iterations < max_iterations:
         f_value = compute_function_value(function(variable), current_guess)
@@ -260,8 +263,8 @@ def newton_method(function, a, b, tolerance, max_iterations=10000):
         if f_next_guess_derivative_value == 0:
             raise ValueError("Производная равна нулю! Метод не может продолжаться!")
 
-        if abs(next_guess - current_guess) <= tolerance or abs(
-                f_next_guess_value / f_next_guess_derivative_value) <= tolerance or abs(
+        if abs(next_guess - current_guess) <= tolerance and abs(
+                f_next_guess_value / f_next_guess_derivative_value) <= tolerance and abs(
                 f_next_guess_value) <= tolerance:
             return next_guess, f_next_guess_value, iterations
 
