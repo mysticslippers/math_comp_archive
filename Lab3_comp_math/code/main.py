@@ -58,3 +58,17 @@ def get_method(choice):
         5: simpson_method
     }
     return method_map.get(choice, None)
+
+
+def read_function_choice(prompt="\nВыберите номер функции (1-5): "):
+    list_functions()
+
+    while True:
+        try:
+            function_choice = int(input(prompt))
+            if 1 <= function_choice <= 5:
+                return function_choice
+            else:
+                print("Некорректный выбор функции! Попробуйте снова.")
+        except ValueError:
+            print("Ошибка ввода! Пожалуйста, введите числовое значение.")
