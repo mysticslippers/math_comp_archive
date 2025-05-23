@@ -97,3 +97,26 @@ def read_tolerance(prompt="\nВведите допустимую погрешн�
                 print("Некорректный ввод! Пожалуйста, введите значение в диапазоне от 0 до 1.")
         except ValueError:
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
+
+
+def read_method(prompt="\nВыберите метод для интегрирования: "):
+    while True:
+        try:
+            method_map = {
+                1: left_rectangle_method,
+                2: middle_rectangle_method,
+                3: right_rectangle_method,
+                4: trapezoidal_method,
+                5: simpson_method
+            }
+            print(prompt)
+            for key, method in method_map.items():
+                print(f"{key}. Метод {method.__name__.replace('_', ' ').capitalize()}")
+
+            method_choice = int(input())
+            if method_choice in method_map:
+                return method_map.get(method_choice, None)
+            else:
+                print("Неверный выбор метода! Попробуйте снова.")
+        except ValueError:
+            print("Ошибка ввода! Пожалуйста, введите числовое значение.")
