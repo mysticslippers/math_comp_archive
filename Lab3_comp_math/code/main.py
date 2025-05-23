@@ -120,3 +120,12 @@ def read_method(prompt="\nВыберите метод для интегриро�
                 print("Неверный выбор метода! Попробуйте снова.")
         except ValueError:
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
+
+
+def read_console():
+    function_choice = read_function_choice()
+    a, b = read_borders()
+    initial_approximation = (a, b)
+    tolerance = read_tolerance()
+    method_choice = read_method()
+    return function_choice, initial_approximation, tolerance, method_choice
