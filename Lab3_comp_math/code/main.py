@@ -36,3 +36,14 @@ def list_functions():
         "5. ln(x + 1)"
     ]
     print("\n".join(functions))
+
+
+def get_function(choice):
+    functions = {
+        1: f1,
+        2: f2,
+        3: f3,
+        4: f4,
+        5: f5
+    }
+    return functions.get(choice, None)
