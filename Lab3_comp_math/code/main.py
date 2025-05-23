@@ -272,3 +272,7 @@ def main():
 
     result, n = method(function, initial_approximation, tolerance)
     print_output(method, n, result)
+
+
+if __name__ == '__main__':
+    main()
