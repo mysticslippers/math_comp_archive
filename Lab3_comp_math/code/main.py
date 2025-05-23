@@ -47,3 +47,14 @@ def get_function(choice):
         5: f5
     }
     return functions.get(choice, None)
+
+
+def get_method(choice):
+    method_map = {
+        1: left_rectangle_method,
+        2: middle_rectangle_method,
+        3: right_rectangle_method,
+        4: trapezoidal_method,
+        5: simpson_method
+    }
+    return method_map.get(choice, None)
