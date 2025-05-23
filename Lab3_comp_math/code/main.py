@@ -257,3 +257,8 @@ def simpson_method(function, initial_approximation, tolerance):
             return current_result, n
         else:
             n *= 2
+
+
+def check_runge_error_estimation(previous_result, current_result, tolerance, method):
+    diff = abs(current_result - previous_result) / (2 ** method - 1)
+    return diff <= tolerance
