@@ -25,3 +25,14 @@ def f4(x):
 
 def f5(x):
     return sp.ln(x + 1)
+
+
+def list_functions():
+    functions = [
+        "1. x^2 - 1",
+        "2. sin(x)",
+        "3. x^3 - 3x^2 + 6x - 19",
+        "4. cos(x)",
+        "5. ln(x + 1)"
+    ]
+    print("\n".join(functions))
