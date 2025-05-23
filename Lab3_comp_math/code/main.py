@@ -262,3 +262,13 @@ def simpson_method(function, initial_approximation, tolerance):
 def check_runge_error_estimation(previous_result, current_result, tolerance, method):
     diff = abs(current_result - previous_result) / (2 ** method - 1)
     return diff <= tolerance
+
+
+def main():
+    print("\t\tЛабораторная работа №3. Численное интегрирование.")
+    function_choice, initial_approximation, tolerance, method_choice = read_console()
+    function = get_function(function_choice)
+    method = get_method(method_choice)
+
+    result, n = method(function, initial_approximation, tolerance)
+    print_output(method, n, result)
