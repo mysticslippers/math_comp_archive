@@ -184,3 +184,26 @@ def middle_rectangle_method(function, initial_approximation, tolerance):
             return current_result, n
         else:
             n *= 2
+
+
+def right_rectangle_method(function, initial_approximation, tolerance):
+    current_result = 0
+    n = INITIAL_N
+
+    while n <= n * (2 ** 10):
+        previous_result = current_result
+
+        current_result = 0
+        x = initial_approximation[0]
+        h = (initial_approximation[1] - initial_approximation[0]) / n
+        x += h
+
+        for i in range(n + 1):
+            current_result += compute_function_value(function, x)
+            x += h
+        current_result *= h
+
+        if check_runge_error_estimation(previous_result, current_result, tolerance, 2):
+            return current_result, n
+        else:
+            n *= 2
