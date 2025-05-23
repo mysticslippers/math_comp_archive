@@ -72,3 +72,16 @@ def read_function_choice(prompt="\nВыберите номер функции (1
                 print("Некорректный выбор функции! Попробуйте снова.")
         except ValueError:
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
+
+
+def read_borders():
+    while True:
+        try:
+            a = float(input("\nВведите нижнюю границу интегрирования (a): "))
+            b = float(input("Введите верхнюю границу интегрирования (b): "))
+            if a > b:
+                a, b = b, a
+
+            return a, b
+        except ValueError:
+            print("Ошибка ввода! Пожалуйста, введите числовые значения.")
