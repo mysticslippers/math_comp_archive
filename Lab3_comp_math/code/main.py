@@ -134,3 +134,9 @@ def read_console():
 def print_output(method, integral_value, n):
     output_message = f"Метод: {method}, Значение интеграла: {integral_value}, Число разбиения интервала: {n}"
     print(output_message)
+
+
+def compute_function_value(expression, point):
+    function = expression(variable)
+    value_function = function.evalf(subs={variable: point})
+    return value_function
