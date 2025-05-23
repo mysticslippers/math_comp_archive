@@ -129,3 +129,8 @@ def read_console():
     tolerance = read_tolerance()
     method_choice = read_method()
     return function_choice, initial_approximation, tolerance, method_choice
+
+
+def print_output(method, integral_value, n):
+    output_message = f"Метод: {method}, Значение интеграла: {integral_value}, Число разбиения интервала: {n}"
+    print(output_message)
