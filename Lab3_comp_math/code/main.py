@@ -121,13 +121,15 @@ def compute_integral_value_by_primitive(expression, initial_approximation):
     F_x = sp.integrate(expression(variable), variable)
     F_x_value_at_a = compute_function_value(F_x, initial_approximation[0])
     F_x_value_at_b = compute_function_value(F_x, initial_approximation[1])
-    print(f"\nПервообразная функции {expression(variable)}: {F_x}")
-    print(f"Значение интеграла: {F_x_value_at_b - F_x_value_at_a}")
+    result = F_x_value_at_b - F_x_value_at_a
+    print("\nПроверим, посчитав ручками.")
+    print(f"Первообразная функции {expression(variable)}: {F_x}")
+    print(f"Значение интеграла: {round(result, 5)}")
 
 
 def compute_integral_value_by_library(expression, initial_approximation):
     result = sp.integrate(expression(variable), (variable, initial_approximation[0], initial_approximation[1]))
-    print(f"\nПроверим с помощью библиотеки: {result}")
+    print(f"\nПроверим с помощью библиотеки: {round(result, 5)}")
 
 
 def left_rectangle_method(function, initial_approximation, tolerance):
@@ -275,7 +277,7 @@ def main():
             if method_choice in method_map:
                 result, n = method_map[method_choice](function(variable), initial_approximation, tolerance)
                 method_name = method_map[method_choice].__name__.replace('_', ' ').capitalize()
-                print_output(method_name, result, n)
+                print_output(method_name, round(result, 5), n)
                 compute_integral_value_by_primitive(function, initial_approximation)
                 compute_integral_value_by_library(function, initial_approximation)
                 break
