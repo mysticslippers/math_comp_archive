@@ -147,7 +147,7 @@ def left_rectangle_method(function, initial_approximation, tolerance):
             x += h
         current_result *= h
 
-        if check_runge_error_estimation(previous_result, current_result, tolerance, 2):
+        if check_runge_error_estimation(previous_result, current_result, tolerance, 1):
             return current_result, n
         else:
             n *= 2
@@ -192,7 +192,7 @@ def right_rectangle_method(function, initial_approximation, tolerance):
             x += h
         current_result *= h
 
-        if check_runge_error_estimation(previous_result, current_result, tolerance, 2):
+        if check_runge_error_estimation(previous_result, current_result, tolerance, 1):
             return current_result, n
         else:
             n *= 2
