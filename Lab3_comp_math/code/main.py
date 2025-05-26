@@ -134,7 +134,7 @@ def left_rectangle_method(function, initial_approximation, tolerance):
     current_result = 0
     n = INITIAL_N
 
-    while n <= n * (2 ** 10):
+    while n <= INITIAL_N * (2 ** 10):
         previous_result = current_result
 
         current_result = 0
@@ -156,7 +156,7 @@ def middle_rectangle_method(function, initial_approximation, tolerance):
     current_result = 0
     n = INITIAL_N
 
-    while n <= n * (2 ** 10):
+    while n <= INITIAL_N * (2 ** 10):
         previous_result = current_result
 
         current_result = 0
@@ -178,7 +178,7 @@ def right_rectangle_method(function, initial_approximation, tolerance):
     current_result = 0
     n = INITIAL_N
 
-    while n <= n * (2 ** 10):
+    while n <= INITIAL_N * (2 ** 10):
         previous_result = current_result
 
         current_result = 0
@@ -201,7 +201,7 @@ def trapezoidal_method(function, initial_approximation, tolerance):
     current_result = 0
     n = INITIAL_N
 
-    while n <= n * (2 ** 10):
+    while n <= INITIAL_N * (2 ** 10):
         previous_result = current_result
 
         x = initial_approximation[0]
@@ -224,7 +224,7 @@ def simpson_method(function, initial_approximation, tolerance):
     current_result = 0
     n = INITIAL_N
 
-    while n <= n * (2 ** 10):
+    while n <= INITIAL_N * (2 ** 10):
         previous_result = current_result
 
         x = initial_approximation[0]
