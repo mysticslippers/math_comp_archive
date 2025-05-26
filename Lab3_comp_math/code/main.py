@@ -99,36 +99,12 @@ def read_tolerance(prompt="\nВведите допустимую погрешн�
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
 
 
-def read_method(prompt="\nВыберите метод для интегрирования: "):
-    while True:
-        try:
-            method_map = {
-                1: left_rectangle_method,
-                2: middle_rectangle_method,
-                3: right_rectangle_method,
-                4: trapezoidal_method,
-                5: simpson_method
-            }
-            print(prompt)
-            for key, method in method_map.items():
-                print(f"{key}. Метод {method.__name__.replace('_', ' ').capitalize()}")
-
-            method_choice = int(input())
-            if method_choice in method_map:
-                return method_map.get(method_choice, None)
-            else:
-                print("Неверный выбор метода! Попробуйте снова.")
-        except ValueError:
-            print("Ошибка ввода! Пожалуйста, введите числовое значение.")
-
-
 def read_console():
     function_choice = read_function_choice()
     a, b = read_borders()
     initial_approximation = (a, b)
     tolerance = read_tolerance()
-    method_choice = read_method()
-    return function_choice, initial_approximation, tolerance, method_choice
+    return function_choice, initial_approximation, tolerance
 
 
 def print_output(method, integral_value, n):
@@ -137,9 +113,21 @@ def print_output(method, integral_value, n):
 
 
 def compute_function_value(expression, point):
-    function = expression(variable)
-    value_function = function.evalf(subs={variable: point})
+    value_function = expression.evalf(subs={variable: point})
     return value_function
+
+
+def compute_integral_value_by_primitive(expression, initial_approximation):
+    F_x = sp.integrate(expression(variable), variable)
+    F_x_value_at_a = compute_function_value(F_x, initial_approximation[0])
+    F_x_value_at_b = compute_function_value(F_x, initial_approximation[1])
+    print(f"\nПервообразная функции {expression(variable)}: {F_x}")
+    print(f"Значение интеграла: {F_x_value_at_b - F_x_value_at_a}")
+
+
+def compute_integral_value_by_library(expression, initial_approximation):
+    result = sp.integrate(expression(variable), (variable, initial_approximation[0], initial_approximation[1]))
+    print(f"\nПроверим с помощью библиотеки: {result}")
 
 
 def left_rectangle_method(function, initial_approximation, tolerance):
@@ -266,12 +254,35 @@ def check_runge_error_estimation(previous_result, current_result, tolerance, met
 
 def main():
     print("\t\tЛабораторная работа №3. Численное интегрирование.")
-    function_choice, initial_approximation, tolerance, method_choice = read_console()
+    prompt = "\nВыберите метод для интегрирования: "
+    function_choice, initial_approximation, tolerance = read_console()
     function = get_function(function_choice)
-    method = get_method(method_choice)
 
-    result, n = method(function, initial_approximation, tolerance)
-    print_output(method, n, result)
+    while True:
+        try:
+            method_map = {
+                1: left_rectangle_method,
+                2: middle_rectangle_method,
+                3: right_rectangle_method,
+                4: trapezoidal_method,
+                5: simpson_method
+            }
+            print(prompt)
+            for key, method in method_map.items():
+                print(f"{key}. Метод {method.__name__.replace('_', ' ').capitalize()}")
+
+            method_choice = int(input("\nВведите значение: "))
+            if method_choice in method_map:
+                result, n = method_map[method_choice](function(variable), initial_approximation, tolerance)
+                method_name = method_map[method_choice].__name__.replace('_', ' ').capitalize()
+                print_output(method_name, result, n)
+                compute_integral_value_by_primitive(function, initial_approximation)
+                compute_integral_value_by_library(function, initial_approximation)
+                break
+            else:
+                print("Неверный выбор метода! Попробуйте снова.")
+        except ValueError:
+            print("Ошибка ввода! Пожалуйста, введите числовое значение.")
 
 
 if __name__ == '__main__':
