@@ -81,7 +81,6 @@ def read_borders():
             b = float(input("Введите верхнюю границу интегрирования (b): "))
             if a > b:
                 a, b = b, a
-
             return a, b
         except ValueError:
             print("Ошибка ввода! Пожалуйста, введите числовые значения.")
