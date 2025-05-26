@@ -250,6 +250,9 @@ def simpson_method(function, initial_approximation, tolerance):
 
 def check_runge_error_estimation(previous_result, current_result, tolerance, method):
     diff = abs(current_result - previous_result) / (2 ** method - 1)
+    if diff <= tolerance:
+        print("\nПравило Рунге сработало.")
+        print(f"Значение по правилу Рунге: {round(diff, 5)}")
     return diff <= tolerance
 
 
