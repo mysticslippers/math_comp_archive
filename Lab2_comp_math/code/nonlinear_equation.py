@@ -1,63 +1,41 @@
-# Лабораторная работа №3 (Вариант №8)
-# Михайлов Дмитрий Андреевич
-# Группа P3206
-
+import numpy as np
 import sympy as sp
+import matplotlib.pyplot as plt
 
-INITIAL_N = 4
 variable = sp.symbols('x')
+INPUT_FILE_PATH = "iofiles/input.txt"
+OUTPUT_FILE_PATH = "iofiles/output.txt"
+
 
 def f1(x):
-    return x**2 - 1
+    return sp.cos(x) - x
 
 
 def f2(x):
-    return sp.sin(x)
+    return x ** 3 - x - 2
 
 
 def f3(x):
-    return x**3 - 3 * x**2 + 6 * x - 19
+    return sp.exp(x) - 3 * x ** 2
 
 
 def f4(x):
-    return sp.cos(x)
+    return x ** 2 - 2
 
 
 def f5(x):
-    return sp.ln(x + 1)
+    return sp.log(x + 2) - x
 
 
 def list_functions():
     functions = [
-        "1. x^2 - 1",
-        "2. sin(x)",
-        "3. x^3 - 3x^2 + 6x - 19",
-        "4. cos(x)",
-        "5. ln(x + 1)"
+        "1. cos(x) - x",
+        "2. x^3 - x - 2",
+        "3. exp(x) - 3*x^2",
+        "4. x^2 - 2",
+        "5. log(x + 2) - x"
     ]
     print("\n".join(functions))
-
-
-def get_function(choice):
-    functions = {
-        1: f1,
-        2: f2,
-        3: f3,
-        4: f4,
-        5: f5
-    }
-    return functions.get(choice, None)
-
-
-def get_method(choice):
-    method_map = {
-        1: left_rectangle_method,
-        2: middle_rectangle_method,
-        3: right_rectangle_method,
-        4: trapezoidal_method,
-        5: simpson_method
-    }
-    return method_map.get(choice, None)
 
 
 def read_function_choice(prompt="\nВыберите номер функции (1-5): "):
@@ -74,17 +52,21 @@ def read_function_choice(prompt="\nВыберите номер функции (1
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
 
 
-def read_borders():
-    while True:
-        try:
-            a = float(input("\nВведите нижнюю границу интегрирования (a): "))
-            b = float(input("Введите верхнюю границу интегрирования (b): "))
-            if a > b:
-                a, b = b, a
+def read_borders(function_choice):
+    try:
+        a = float(input("\nВведите левую границу интервала (a): "))
+        b = float(input("Введите правую границу интервала (b): "))
 
-            return a, b
-        except ValueError:
-            print("Ошибка ввода! Пожалуйста, введите числовые значения.")
+        func = get_function(function_choice)
+
+        if not verify_root(func, a, b):
+            print("Некорректный ввод! Попробуйте снова.")
+            return read_borders(function_choice)
+
+        return a, b
+    except ValueError:
+        print("Ошибка ввода! Пожалуйста, введите числовые значения.")
+        return read_borders(function_choice)
 
 
 def read_tolerance(prompt="\nВведите допустимую погрешность (0 < tolerance <= 1): "):
@@ -101,175 +83,280 @@ def read_tolerance(prompt="\nВведите допустимую погрешн�
 
 def read_console():
     function_choice = read_function_choice()
-    a, b = read_borders()
-    initial_approximation = (a, b)
+    a, b = read_borders(function_choice)
     tolerance = read_tolerance()
-    return function_choice, initial_approximation, tolerance
+    return function_choice, a, b, tolerance
 
 
-def print_output(method, integral_value, n):
-    output_message = f"Метод: {method}, Значение интеграла: {integral_value}, Число разбиения интервала: {n}"
-    print(output_message)
+def read_file(file_path=INPUT_FILE_PATH):
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+            function_choice = int(lines[0].strip())
+            a = float(lines[1].strip())
+            b = float(lines[2].strip())
+            tolerance = float(lines[3].strip())
+
+            func = get_function(function_choice)
+            if not verify_root(func, a, b):
+                print("Некорректный ввод! Режим ввода переключён на консоль.")
+                return None
+
+            return function_choice, a, b, tolerance
+    except (ValueError, IndexError, FileNotFoundError) as e:
+        print(f"Ошибка при чтении файла: {e}. Режим ввода переключён на консоль.")
+        return None
+
+
+def read_input():
+    while True:
+        method_choice = input("Выберите способ ввода данных 'файл'/'клавиатура' (+/-): ").strip().lower()
+
+        if method_choice == '+':
+            function_choice, a, b, tolerance = read_file()
+            if function_choice is not None:
+                return function_choice, a, b, tolerance
+            print("Ошибка чтения из файла. Переход к вводу с клавиатуры.")
+
+        elif method_choice == '-':
+            return read_console()
+
+        else:
+            print("Некорректный ввод! Попробуйте снова.")
+
+
+def get_function(choice):
+    functions = {
+        1: f1,
+        2: f2,
+        3: f3,
+        4: f4,
+        5: f5
+    }
+    return functions.get(choice, None)
+
+
+def is_logarithmic(expression):
+    function = expression(variable)
+    return function.has(sp.log)
+
+
+def verify_root(expression, a, b):
+    if is_logarithmic(expression):
+        if a <= -2 or b <= -2:
+            print(f"Интервал [{a}, {b}] содержит значения, для которых логарифм не определен.")
+            return False
+
+    fa, fb = compute_function_value(expression(variable), a), compute_function_value(expression(variable), b)
+
+    if fa * fb > 0:
+        print("На заданном интервале нет корня или несколько корней!")
+        return False
+
+    print(f"Есть корень уравнения на интервале [{a}, {b}].")
+    return True
+
+
+def find_derivative(expression):
+    return sp.diff(expression(variable), variable)
+
+
+def find_second_derivative(expression):
+    first_derivative = sp.diff(expression(variable), variable)
+    return sp.diff(first_derivative, variable)
 
 
 def compute_function_value(expression, point):
-    function = expression(variable)
-    value_function = function.evalf(subs={variable: point})
+    value_function = expression.evalf(subs={variable: point})
     return value_function
 
 
-def left_rectangle_method(function, initial_approximation, tolerance):
-    current_result = 0
-    n = INITIAL_N
+def find_lamda_coefficient(expression, borders):
+    derivative = find_derivative(expression)
 
-    while n <= n * (2 ** 10):
-        previous_result = current_result
+    value_derivative_at_left = round(abs(compute_function_value(derivative, borders[0])), 2)
+    print(f"Значение производной функции f'(x) на левой границе: {value_derivative_at_left}")
 
-        current_result = 0
-        x = initial_approximation[0]
-        h = (initial_approximation[1] - initial_approximation[0]) / n
+    value_derivative_at_right = round(abs(compute_function_value(derivative, borders[1])), 2)
+    print(f"Значение производной функции f'(x) на правой границе: {value_derivative_at_right}")
 
-        for i in range(n):
-            current_result += compute_function_value(function, x)
-            x += h
-        current_result *= h
+    if value_derivative_at_left == 0 or value_derivative_at_right == 0:
+        raise ValueError("Производная равна нулю, деление на ноль не допускается!")
 
-        if check_runge_error_estimation(previous_result, current_result, tolerance, 2):
-            return current_result, n
+
+    maximum = value_derivative_at_left if (value_derivative_at_left > value_derivative_at_right) else value_derivative_at_right
+
+    return -1 / maximum
+
+
+def plot(function, a, b, num_points=1000, title='График функции', xlabel='x', ylabel='f(x)', line_style='-',
+                  line_color='b'):
+    if not callable(function):
+        raise ValueError("Параметр 'f' должен быть вызываемым объектом (функция).")
+    if a >= b:
+        raise ValueError("Параметр 'a' должен быть меньше параметра 'b'.")
+
+    points = np.linspace(a, b, num_points)
+
+    try:
+        y = np.array([compute_function_value(function(variable), point) for point in points])
+    except Exception as e:
+        raise RuntimeError(f"Ошибка при вычислении значений функции: {e}")
+
+    plt.plot(points, y, label='Функция', linestyle=line_style, color=line_color)
+    plt.axhline(0, color='black', lw=0.5, ls='--')
+    plt.axvline(0, color='black', lw=0.5, ls='--')
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+
+def print_output(method, root, func_value, iterations, output_to_file, filename=OUTPUT_FILE_PATH):
+    output_message = f"Method: {method}, Root: {root}, The value of the function at the root: {func_value}, Number of iterations: {iterations}"
+    if output_to_file:
+        with open(filename, 'w') as file:
+            file.write(output_message)
+    else:
+        print(output_message)
+
+
+def bisection_method(function, a, b, tolerance):
+    iterations, root = 0, 0
+    while True:
+        root = (a + b) / 2.0
+        f_root = function(root)
+
+        if abs(f_root) <= tolerance:
+            return root, f_root, iterations
+        elif function(a) * f_root > 0:
+            a = root
         else:
-            n *= 2
+            b = root
+
+        iterations += 1
 
 
-def middle_rectangle_method(function, initial_approximation, tolerance):
-    current_result = 0
-    n = INITIAL_N
+def newton_method(function, a, b, tolerance, max_iterations=10000):
+    iterations = 0
+    derivative = find_derivative(function)
+    print(f"\nПроизводная функции: {derivative}")
+    second_derivative = find_second_derivative(function)
+    print(f"Вторая производная функции: {second_derivative}\n")
 
-    while n <= n * (2 ** 10):
-        previous_result = current_result
+    current_guess = a if compute_function_value(function(variable), a) * compute_function_value(second_derivative, a) > 0 else b
+    print(f"x_0 = {current_guess}")
 
-        current_result = 0
-        x = initial_approximation[0]
-        h = (initial_approximation[1] - initial_approximation[0]) / n
+    while iterations < max_iterations:
+        f_value = compute_function_value(function(variable), current_guess)
+        f_derivative_value = compute_function_value(derivative, current_guess)
 
-        for i in range(n):
-            current_result += compute_function_value(function, x + h / 2)
-            x += h
-        current_result *= h
+        if f_derivative_value == 0:
+            raise ValueError("Производная равна нулю! Метод не может продолжаться!")
 
-        if check_runge_error_estimation(previous_result, current_result, tolerance, 2):
-            return current_result, n
-        else:
-            n *= 2
+        next_guess = current_guess - (f_value / f_derivative_value)
 
+        f_next_guess_value = compute_function_value(function(variable), next_guess)
+        f_next_guess_derivative_value = compute_function_value(derivative, next_guess)
 
-def right_rectangle_method(function, initial_approximation, tolerance):
-    current_result = 0
-    n = INITIAL_N
+        if f_next_guess_derivative_value == 0:
+            raise ValueError("Производная равна нулю! Метод не может продолжаться!")
 
-    while n <= n * (2 ** 10):
-        previous_result = current_result
+        if abs(next_guess - current_guess) <= tolerance and abs(
+                f_next_guess_value / f_next_guess_derivative_value) <= tolerance and abs(
+                f_next_guess_value) <= tolerance:
+            return next_guess, f_next_guess_value, iterations
 
-        current_result = 0
-        x = initial_approximation[0]
-        h = (initial_approximation[1] - initial_approximation[0]) / n
-        x += h
+        current_guess = next_guess
+        iterations += 1
 
-        for i in range(n + 1):
-            current_result += compute_function_value(function, x)
-            x += h
-        current_result *= h
-
-        if check_runge_error_estimation(previous_result, current_result, tolerance, 2):
-            return current_result, n
-        else:
-            n *= 2
+    raise ValueError("Метод Ньютона не сошелся за максимальное количество итераций!")
 
 
-def trapezoidal_method(function, initial_approximation, tolerance):
-    current_result = 0
-    n = INITIAL_N
+def iteration_method(function, initial_approximation, tolerance, max_iterations=10000):
+    iterations = 0
+    a, b = initial_approximation[0], initial_approximation[1]
+    derivative = find_derivative(function)
+    print(f"\nПроизводная функции: {derivative}")
+    second_derivative = find_second_derivative(function)
+    print(f"Вторая производная функции: {second_derivative}\n")
 
-    while n <= n * (2 ** 10):
-        previous_result = current_result
+    lamda = round(find_lamda_coefficient(function, initial_approximation), 2)
+    print(f"Коэффициент лямбда: {lamda}\n")
 
-        x = initial_approximation[0]
-        h = (initial_approximation[1] - initial_approximation[0]) / n
-        x += h
-        current_result = (compute_function_value(function, initial_approximation[0]) + compute_function_value(function, initial_approximation[1])) / 2
-
-        for i in range(n - 1):
-            current_result += compute_function_value(function, x)
-            x += h
-        current_result *= h
-
-        if check_runge_error_estimation(previous_result, current_result, tolerance, 2):
-            return current_result, n
-        else:
-            n *= 2
+    def phi_function(x):
+        function_value = compute_function_value(function(variable), x)
+        return x + lamda * function_value
 
 
-def simpson_method(function, initial_approximation, tolerance):
-    current_result = 0
-    n = INITIAL_N
+    def check_convergence():
+        phi_derivative_value_left = abs(1 + lamda * compute_function_value(derivative, a))
+        print(f"Значение производной функции phi'(x) на левой границе: {phi_derivative_value_left}")
 
-    while n <= n * (2 ** 10):
-        previous_result = current_result
+        phi_derivative_value_right = abs(1 + lamda * compute_function_value(derivative, b))
+        print(f"Значение производной функции phi'(x) на правой границе: {phi_derivative_value_right}")
 
-        x = initial_approximation[0]
-        h = (initial_approximation[1] - initial_approximation[0]) / n
-        x += h
-        current_result = compute_function_value(function, initial_approximation[0]) + compute_function_value(function, initial_approximation[1])
-
-        for i in range(n - 1):
-            if i % 2 == 0:
-                current_result += 4 * compute_function_value(function, x)
-            else:
-                current_result += 2 * compute_function_value(function, x)
-
-            x += h
-        current_result *= h / 3
-
-        if check_runge_error_estimation(previous_result, current_result, tolerance, 4):
-            return current_result, n
-        else:
-            n *= 2
+        q = phi_derivative_value_left if (phi_derivative_value_left > phi_derivative_value_right) else phi_derivative_value_right
+        return q >= 1
 
 
-def check_runge_error_estimation(previous_result, current_result, tolerance, method):
-    diff = abs(current_result - previous_result) / (2 ** method - 1)
-    return diff <= tolerance
+    check_convergence()
 
 
-def main():
-    print("\t\tЛабораторная работа №3. Численное интегрирование.")
-    prompt = "\nВыберите метод для интегрирования: "
-    function_choice, initial_approximation, tolerance = read_console()
+    current_value = a if compute_function_value(function(variable), a) * compute_function_value(second_derivative, a) > 0 else b
+    print(f"x_0 = {current_value}")
+
+    while iterations < max_iterations:
+        next_value = phi_function(current_value)
+        f_next_value = compute_function_value(function(variable), next_value)
+
+        if abs(f_next_value) <= tolerance:
+            return next_value, f_next_value, iterations
+
+        current_value = next_value
+        iterations += 1
+
+    return None, None, None
+
+
+def solve_nonlinear_equation():
+    print("\n\t\tЧисленное решение нелинейных уравнений")
+    function_choice, a, b, tolerance = read_input()
     function = get_function(function_choice)
+
+    method_map = {
+        1: bisection_method,
+        2: newton_method,
+        3: iteration_method
+    }
+
+    print("Выберите метод:")
+    for key, method in method_map.items():
+        print(f"{key}. Метод {method.__name__.replace('_', ' ').capitalize()}")
 
     while True:
         try:
-            method_map = {
-                1: left_rectangle_method,
-                2: middle_rectangle_method,
-                3: right_rectangle_method,
-                4: trapezoidal_method,
-                5: simpson_method
-            }
-            print(prompt)
-            for key, method in method_map.items():
-                print(f"{key}. Метод {method.__name__.replace('_', ' ').capitalize()}")
-
-            method_choice = int(input("\nВведите значение: "))
-            if method_choice in method_map:
-                result, n = method_map[method_choice](function, initial_approximation, tolerance)
-                method_name = method_map[method_choice].__name__.replace('_', ' ').capitalize()
-                print_output(method_name, result, n)
-                break
-            else:
+            method_choice = int(input("Ваш выбор: "))
+            if method_choice not in method_map:
                 print("Неверный выбор метода! Попробуйте снова.")
+                continue
+
+            if method_choice == 3:
+                initial_approximation = (a, b)
+                root, f_value, iterations = iteration_method(function, initial_approximation, tolerance)
+                if root is None:
+                    print("Не выполняется условие сходимости для итерационного метода!\n")
+                    continue
+            else:
+                root, f_value, iterations = method_map[method_choice](function, a, b, tolerance)
+
+            output_to_file = input("Вывести результаты в файл? (y/n): ").strip().lower() == 'y'
+            print_output(method_choice, root, f_value, iterations, output_to_file)
+
+            plot(function, a, b)
+            break
+
         except ValueError:
             print("Ошибка ввода! Пожалуйста, введите числовое значение.")
-
-
-if __name__ == '__main__':
-    main()
