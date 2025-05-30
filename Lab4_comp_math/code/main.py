@@ -48,6 +48,23 @@ def read_file(file_path=INPUT_FILE_PATH):
         return None
 
 
+def read_input():
+    while True:
+        try:
+            method_choice = input("Выберите способ ввода данных 'файл'/'клавиатура' (+/-): ").strip().lower()
+            if method_choice == '+':
+                dots = read_file()
+                if dots is not None:
+                    return dots
+                print("Ошибка чтения из файла. Переход к вводу с клавиатуры.")
+            elif method_choice == '-':
+                return read_dots()
+            else:
+                print("Некорректный ввод! Попробуйте снова.")
+        except Exception as exception:
+            print(f"Произошла ошибка: {exception}. Пожалуйста, попробуйте снова.")
+
+
 def main():
     print("\t\t\t\t\t\tЛабораторная работа №4")
     
