@@ -34,6 +34,20 @@ def read_dots(prompt="\nВводите координаты через проб�
             print("Минимальное количество точек - 2!")
 
 
+def read_file(file_path=INPUT_FILE_PATH):
+    try:
+        dots = []
+        with open(file_path, 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                current_dot = tuple(map(float, row))
+                dots.append(current_dot)
+            return np.array(dots)
+    except (ValueError, IndexError, FileNotFoundError) as exception:
+        print(f"Ошибка при чтении файла: {exception}. Режим ввода переключён на консоль.")
+        return None
+
+
 def main():
     print("\t\t\t\t\t\tЛабораторная работа №4")
     
