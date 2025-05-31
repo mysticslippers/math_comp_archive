@@ -284,7 +284,52 @@ def plot(x, y, plot_x, plot_ys, labels):
 
 
 def main():
-    print("\t\t\t\t\t\tЛабораторная работа №4")
+    print("\t\t\t\tЛабораторная работа №4")
+    dots = read_input()
+
+    answers = []
+    tmp_answers = [linear_approximation(dots),
+                   quadratic_approximation(dots),
+                   exponential_approximation(dots),
+                   logarithmic_approximation(dots),
+                   power_approximation(dots)]
+
+    for answer in tmp_answers:
+        if answer is not None:
+            answers.append(answer)
+
+    table = PrettyTable()
+    table.field_names = ["Вид функции", "Ср. отклонение"]
+    for answer in answers:
+        table.add_row([answer['str_f'], f"{answer['s^2']:.4f}"])
+    print(table)
+
+    x = np.array([dot[0] for dot in dots])
+    y = np.array([dot[1] for dot in dots])
+    plot_x = np.linspace(np.min(x), np.max(x), 100)
+    plot_y = []
+    labels = []
+
+    for answer in answers:
+        plot_y.append([answer['f'](x) for x in plot_x])
+        labels.append(answer['str_f'])
+
+    plot(x, y, plot_x, plot_y, labels)
+
+    best_answer = min(answers, key=lambda x: x['s^2'])
+
+    table = PrettyTable()
+    table.field_names = ["Параметр", "Значение"]
+    table.add_row(["Наилучшая аппроксимирующая функция", best_answer['str_f']])
+    table.add_row(["a", round(best_answer['a'], 4)])
+    table.add_row(["b", round(best_answer['b'], 4)])
+    table.add_row(["c", round(best_answer['c'], 4) if 'c' in best_answer else '-'])
+    print("\n")
+    print(table)
+
+
+if __name__ == "__main__":
+    main()
     
 
 if __name__ == "__main__":
