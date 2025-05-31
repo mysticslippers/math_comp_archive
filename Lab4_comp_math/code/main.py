@@ -187,6 +187,30 @@ def quadratic_approximation(dots):
     return data
 
 
+def exponential_approximation(dots):
+    if not dots or any(dot[1] <= 0 for dot in dots):
+        return None
+
+    x = [dot[0] for dot in dots]
+    lin_y = [log(dot[1]) for dot in dots]
+
+    lin_result = linear_approximation(list(zip(x, lin_y)))
+
+    a = exp(lin_result['b'])
+    b = lin_result['a']
+
+    data = {
+        'a': a,
+        'b': b,
+        'f': lambda x: a * exp(b * x),
+        'str_f': "f_i = a * e^(b * x)",
+        's': compute_deviation(dots, lambda x: a * exp(b * x)),
+        's^2': compute_standard_deviation(dots, lambda x: a * exp(b * x))
+    }
+
+    return data
+
+
 def plot(x, y, plot_x, plot_ys, labels):
     plt.figure()
     plt.title("График")
