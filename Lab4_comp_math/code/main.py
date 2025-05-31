@@ -105,6 +105,39 @@ def compute_standard_deviation(dots, function):
     return sqrt(s / n)
 
 
+def linear_approximation(dots):
+    n = len(dots)
+
+    if n == 0:
+        return None
+
+    sx = sum(dot[0] for dot in dots)
+    sy = sum(dot[1] for dot in dots)
+    sx2 = sum(dot[0] ** 2 for dot in dots)
+    sxy = sum(dot[0] * dot[1] for dot in dots)
+
+    determinant = compute_determinant([[sx2, sx], [sx, n]])
+    determinant1 = compute_determinant([[sxy, sx], [sy, n]])
+    determinant2 = compute_determinant([[sx2, sxy], [sx, sy]])
+
+    if determinant == 0:
+        return None
+
+    a = determinant1 / determinant
+    b = determinant2 / determinant
+
+    data = {
+        'a': a,
+        'b': b,
+        'f': lambda x: a * x + b,
+        'str_f': "f_i = a * x + b",
+        's': compute_deviation(dots, lambda x: a * x + b),
+        's^2': compute_standard_deviation(dots, lambda x: a * x + b)
+    }
+
+    return data
+
+
 def plot(x, y, plot_x, plot_ys, labels):
     plt.figure()
     plt.title("График")
