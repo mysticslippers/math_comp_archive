@@ -3,12 +3,12 @@
 # Группа P3206
 
 
-import csv
-import numpy as np
-import sympy as sp
-import matplotlib.pyplot as plt
+from math import sqrt, log, exp
 
-variable = sp.symbols('x')
+import matplotlib.pyplot as plt
+import numpy as np
+from prettytable import PrettyTable
+
 INPUT_FILE_PATH = "iofiles/input.txt"
 OUTPUT_FILE_PATH = "iofiles/output.txt"
 
@@ -34,18 +34,26 @@ def read_dots(prompt="\nВводите координаты через проб�
             print("Минимальное количество точек - 2!")
 
 
-def read_file(file_path=INPUT_FILE_PATH):
+def read_file(fila_path=INPUT_FILE_PATH):
+    dots = []
+
     try:
-        dots = []
-        with open(file_path, 'r') as file:
-            reader = csv.reader(file)
-            for row in reader:
-                current_dot = tuple(map(float, row))
-                dots.append(current_dot)
-            return np.array(dots)
-    except (ValueError, IndexError, FileNotFoundError) as exception:
-        print(f"Ошибка при чтении файла: {exception}. Режим ввода переключён на консоль.")
+        with open(fila_path, 'rt', encoding='UTF-8') as fin:
+            for line in fin:
+                current_dot = tuple(map(float, line.strip().split()))
+                if len(current_dot) == 2:
+                    dots.append(current_dot)
+                else:
+                    raise ValueError("Каждая строка должна содержать ровно две координаты.")
+
+        if len(dots) < 2:
+            raise AttributeError("Недостаточно точек для обработки. Необходимо не менее двух точек.")
+
+    except (ValueError, AttributeError) as exception:
+        print(f"Ошибка при обработке файла: {exception}")
         return None
+
+    return dots
 
 
 def read_input():
