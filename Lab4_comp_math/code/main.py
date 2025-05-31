@@ -73,6 +73,24 @@ def read_input():
             print(f"Произошла ошибка: {exception}. Пожалуйста, попробуйте снова.")
 
 
+def compute_determinant(matrix):
+    n = len(matrix)
+
+    if n == 1:
+        return matrix[0][0]
+
+    if n == 2:
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+
+    determinant = 0
+    for j in range(n):
+        minor = [row[:j] + row[j + 1:] for row in matrix[1:]]
+        sign = (-1) ** j
+        determinant += sign * matrix[0][j] * compute_determinant(minor)
+
+    return determinant
+
+
 def plot(x, y, plot_x, plot_ys, labels):
     plt.figure()
     plt.title("График")
