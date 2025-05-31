@@ -138,6 +138,55 @@ def linear_approximation(dots):
     return data
 
 
+def quadratic_approximation(dots):
+    n = len(dots)
+
+    x, y = zip(*dots)
+
+    sx = sum(x)
+    sy = sum(y)
+    sx2 = sum(xi ** 2 for xi in x)
+    sx3 = sum(xi ** 3 for xi in x)
+    sx4 = sum(xi ** 4 for xi in x)
+    sxy = sum(xi * yi for xi, yi in zip(x, y))
+    sx2y = sum((xi ** 2) * yi for xi, yi in zip(x, y))
+
+    determinant = compute_determinant([[n, sx, sx2],
+                    [sx, sx2, sx3],
+                    [sx2, sx3, sx4]])
+
+    determinant1 = compute_determinant([[sy, sx, sx2],
+                     [sxy, sx2, sx3],
+                     [sx2y, sx3, sx4]])
+
+    determinant2 = compute_determinant([[n, sy, sx2],
+                     [sx, sxy, sx3],
+                     [sx2, sx2y, sx4]])
+
+    determinant3 = compute_determinant([[n, sx, sy],
+                     [sx, sx2, sxy],
+                     [sx2, sx3, sx2y]])
+
+    if determinant == 0:
+        return None
+
+    c = determinant1 / determinant
+    b = determinant2 / determinant
+    a = determinant3 / determinant
+
+    data = {
+        'a': a,
+        'b': b,
+        'c': c,
+        'f': lambda x: a * (x ** 2) + b * x + c,
+        'str_f': "f_i = a * x^2 + b * x + c",
+        's': compute_deviation(dots, lambda x: a * (x ** 2) + b * x + c),
+        's^2': compute_standard_deviation(dots, lambda x: a * (x ** 2) + b * x + c)
+    }
+
+    return data
+
+
 def plot(x, y, plot_x, plot_ys, labels):
     plt.figure()
     plt.title("График")
