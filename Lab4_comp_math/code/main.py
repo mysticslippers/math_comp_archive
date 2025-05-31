@@ -91,6 +91,11 @@ def compute_determinant(matrix):
     return determinant
 
 
+def compute_deviation(dots, function):
+    deviations = [(function(dot[0]) - dot[1]) ** 2 for dot in dots]
+    return sum(deviations)
+
+
 def plot(x, y, plot_x, plot_ys, labels):
     plt.figure()
     plt.title("График")
