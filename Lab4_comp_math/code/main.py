@@ -211,6 +211,31 @@ def exponential_approximation(dots):
     return data
 
 
+def logarithmic_approximation(dots):
+    if not dots or any(dot[0] <= 0 for dot in dots):
+        return None
+
+    x = [dot[0] for dot in dots]
+    y = [dot[1] for dot in dots]
+
+    lin_x = [log(val) for val in x]
+    lin_result = linear_approximation(list(zip(lin_x, y)))
+
+    a = lin_result['a']
+    b = lin_result['b']
+
+    data = {
+        'a': a,
+        'b': b,
+        'f': lambda x: a * log(x) + b,
+        'str_f': "f_i = a * ln(x) + b",
+        's': compute_deviation(dots, lambda x: a * log(x) + b),
+        's^2': compute_standard_deviation(dots, lambda x: a * log(x) + b)
+    }
+
+    return data
+
+
 def plot(x, y, plot_x, plot_ys, labels):
     plt.figure()
     plt.title("График")
