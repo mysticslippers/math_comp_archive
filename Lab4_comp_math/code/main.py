@@ -96,6 +96,15 @@ def compute_deviation(dots, function):
     return sum(deviations)
 
 
+def compute_standard_deviation(dots, function):
+    n = len(dots)
+    if n == 0:
+        return 0
+
+    s = compute_deviation(dots, function)
+    return sqrt(s / n)
+
+
 def plot(x, y, plot_x, plot_ys, labels):
     plt.figure()
     plt.title("График")
