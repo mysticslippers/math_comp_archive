@@ -236,6 +236,30 @@ def logarithmic_approximation(dots):
     return data
 
 
+def power_approximation(dots):
+    if any(dot[0] <= 0 or dot[1] <= 0 for dot in dots):
+        return None
+
+    lin_x = [log(dot[0]) for dot in dots]
+    lin_y = [log(dot[1]) for dot in dots]
+
+    lin_result = linear_approximation(list(zip(lin_x, lin_y)))
+
+    a = exp(lin_result['b'])
+    b = lin_result['a']
+
+    data = {
+        'a': a,
+        'b': b,
+        'f': lambda x: a * (x ** b),
+        'str_f': "f_i = a * x^b",
+        's': compute_deviation(dots, lambda x: a * (x ** b)),
+        's^2': compute_standard_deviation(dots, lambda x: a * (x ** b))
+    }
+
+    return data
+
+
 def plot(x, y, plot_x, plot_ys, labels):
     plt.figure()
     plt.title("График")
