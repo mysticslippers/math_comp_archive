@@ -2,7 +2,6 @@
 # Михайлов Дмитрий Андреевич
 # Группа P3206
 
-
 from math import sqrt, log, exp
 
 import matplotlib.pyplot as plt
@@ -260,6 +259,15 @@ def power_approximation(dots):
     return data
 
 
+def print_output(table1, table2, output_to_file, filename=OUTPUT_FILE_PATH):
+    output_message = table1.get_string() + "\n\n" + table2.get_string()
+    if output_to_file:
+        with open(filename, 'w') as file:
+            file.write(output_message)
+    else:
+        print(output_message)
+
+
 def plot(x, y, plot_x, plot_ys, labels):
     plt.figure()
     plt.title("График")
@@ -298,11 +306,10 @@ def main():
         if answer is not None:
             answers.append(answer)
 
-    table = PrettyTable()
-    table.field_names = ["Вид функции", "Ср. отклонение"]
+    table1 = PrettyTable()
+    table1.field_names = ["Вид функции", "Ср. отклонение"]
     for answer in answers:
-        table.add_row([answer['str_f'], f"{answer['s^2']:.4f}"])
-    print(table)
+        table1.add_row([answer['str_f'], f"{answer['s^2']:.4f}"])
 
     x = np.array([dot[0] for dot in dots])
     y = np.array([dot[1] for dot in dots])
@@ -318,19 +325,16 @@ def main():
 
     best_answer = min(answers, key=lambda x: x['s^2'])
 
-    table = PrettyTable()
-    table.field_names = ["Параметр", "Значение"]
-    table.add_row(["Наилучшая аппроксимирующая функция", best_answer['str_f']])
-    table.add_row(["a", round(best_answer['a'], 4)])
-    table.add_row(["b", round(best_answer['b'], 4)])
-    table.add_row(["c", round(best_answer['c'], 4) if 'c' in best_answer else '-'])
-    print("\n")
-    print(table)
+    table2 = PrettyTable()
+    table2.field_names = ["Параметр", "Значение"]
+    table2.add_row(["Наилучшая аппроксимирующая функция", best_answer['str_f']])
+    table2.add_row(["a", round(best_answer['a'], 4)])
+    table2.add_row(["b", round(best_answer['b'], 4)])
+    table2.add_row(["c", round(best_answer['c'], 4) if 'c' in best_answer else '-'])
 
+    output_to_file = input("Вывести результаты в файл? (y/n): ").strip().lower() == 'y'
+    print_output(table1, table2, output_to_file)
 
-if __name__ == "__main__":
-    main()
-    
 
 if __name__ == "__main__":
     main()
