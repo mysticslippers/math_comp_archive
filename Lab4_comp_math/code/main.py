@@ -186,6 +186,72 @@ def quadratic_approximation(dots):
     return data
 
 
+def cubic_approximation(dots):
+    n = len(dots)
+
+    x, y = zip(*dots)
+
+    sx = sum(x)
+    sy = sum(y)
+    sx2 = sum(xi ** 2 for xi in x)
+    sx3 = sum(xi ** 3 for xi in x)
+    sx4 = sum(xi ** 4 for xi in x)
+    sx5 = sum(xi ** 5 for xi in x)
+    sx6 = sum(xi ** 6 for xi in x)
+    sxy = sum(xi * yi for xi, yi in zip(x, y))
+    sx2y = sum((xi ** 2) * yi for xi, yi in zip(x, y))
+    sx3y = sum((xi ** 3) * yi for xi, yi in zip(x, y))
+
+    determinant = compute_determinant([
+        [n, sx, sx2, sx3],
+        [sx, sx2, sx3, sx4],
+        [sx2, sx3, sx4, sx5],
+        [sx3, sx4, sx5, sx6]
+    ])
+
+    determinant1 = compute_determinant([
+        [sy, sx, sx2, sx3],
+        [sxy, sx2, sx3, sx4],
+        [sx2y, sx3, sx4, sx5],
+        [sx3y, sx4, sx5, sx6]
+    ])
+
+    determinant2 = compute_determinant([
+        [n, sy, sx2, sx3],
+        [sx, sxy, sx3, sx4],
+        [sx2, sx2y, sx4, sx5],
+        [sx3, sx3y, sx5, sx6]
+    ])
+
+    determinant3 = compute_determinant([
+        [n, sx, sy, sx3],
+        [sx, sx2, sxy, sx4],
+        [sx2, sx3, sx2y, sx5],
+        [sx3, sx4, sx3y, sx6]
+    ])
+
+    if determinant == 0:
+        return None
+
+    d = determinant1 / determinant
+    c = determinant2 / determinant
+    b = determinant3 / determinant
+    a = (sy - b * sx - c * sx2 - d * sx3) / n
+
+    data = {
+        'a': a,
+        'b': b,
+        'c': c,
+        'd': d,
+        'f': lambda x: a * (x ** 3) + b * (x ** 2) + c * x + d,
+        'str_f': "f_i = a * x^3 + b * x^2 + c * x + d",
+        's': compute_deviation(dots, lambda x: a * (x ** 3) + b * (x ** 2) + c * x + d),
+        's^2': compute_standard_deviation(dots, lambda x: a * (x ** 3) + b * (x ** 2) + c * x + d)
+    }
+
+    return data
+
+
 def exponential_approximation(dots):
     if not dots or any(dot[1] <= 0 for dot in dots):
         return None
