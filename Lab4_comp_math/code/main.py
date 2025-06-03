@@ -369,6 +369,7 @@ def main():
     answers = []
     tmp_answers = [linear_approximation(dots),
                    quadratic_approximation(dots),
+                   cubic_approximation(dots),
                    exponential_approximation(dots),
                    logarithmic_approximation(dots),
                    power_approximation(dots)]
