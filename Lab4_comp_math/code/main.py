@@ -279,7 +279,9 @@ def exponential_approximation(dots):
 
 
 def logarithmic_approximation(dots):
-    if not dots or any(dot[0] <= 0 for dot in dots):
+    dots_array = np.array(dots)
+
+    if not dots_array.size or np.any(dots_array[:, 0] <= 0):
         return None
 
     x = [dot[0] for dot in dots]
