@@ -306,7 +306,8 @@ def logarithmic_approximation(dots):
 
 
 def power_approximation(dots):
-    if any(dot[0] <= 0 or dot[1] <= 0 for dot in dots):
+    dots_array = np.array(dots)
+    if np.any(dots_array[:, 0] <= 0) or np.any(dots_array[:, 1] <= 0):
         return None
 
     lin_x = [log(dot[0]) for dot in dots]
