@@ -1,0 +1,636 @@
+\documentclass[12pt]{report}
+
+\usepackage{cmap}
+\usepackage[T1,T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{dsfont}
+\usepackage{bm}
+\usepackage{diagbox}
+\usepackage[left=20mm,right=10mm,top=20mm,bottom=20mm,bindingoffset=2mm]{geometry}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{minted}
+
+\DeclareMathOperator{\N}{\mathbb{N}}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\Z}{\mathbb{Z}}
+\DeclareMathOperator{\CC}{\mathbb{C}}
+\DeclareMathOperator{\PP}{\mathrm{P}}
+\DeclareMathOperator{\Expec}{\mathrm{E}}
+\DeclareMathOperator{\Var}{\mathrm{Var}}
+\DeclareMathOperator{\Cov}{\mathrm{Cov}}
+\DeclareMathOperator{\asConv}{\xrightarrow{a.s.}}
+\DeclareMathOperator{\LpConv}{\xrightarrow{Lp}}
+\DeclareMathOperator{\pConv}{\xrightarrow{p}}
+\DeclareMathOperator{\dConv}{\xrightarrow{d}}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue,
+	urlcolor=blue
+}
+
+\lstset{language=Python, extendedchars=\true}
+
+\lstdefinestyle{pythonstyle}{
+	language=Python,
+	backgroundcolor=\color{lightgray},
+	commentstyle=\color{green},
+	keywordstyle=\color{blue},
+	stringstyle=\color{red},
+	basicstyle=\ttfamily,
+	frame=single,
+	breaklines=true
+}
+
+\addto\captionsrussian{\renewcommand{\refname}{Список использованных источников}}
+
+\begin{document}
+	
+	\begin{titlepage}
+		\begin{center}
+			\large{Федеральное государственное автономное образовательное учреждение высшего образования <<Национальный исследовательский университет ИТМО>>}
+		\end{center}
+		
+		\vspace{15em}
+		
+		\begin{center}
+			\huge{\textbf{Лабораторная работа №3}} \\
+			\large{По дисциплине <<Вычислительная математика>>} \\
+			\large{Вариант №12}
+		\end{center}
+		
+		\vspace{5em}
+		
+		\begin{flushright}
+			\textit{\large{Выполнил:}} \\
+			\large{Студент группы P3218} \\
+			\large{Михайлов Дмитрий} \\
+			\large{Андреевич} \\
+			\textit{\large{Преподаватель:}} \\
+			\large{Малышева Татьяна} \\
+			\large{Алексеевна}
+		\end{flushright}
+		
+		\vspace{2cm}
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.5\linewidth]{image.png}
+		\end{figure}
+		
+		\begin{center}
+			Санкт-Петербург \\
+			2026 год
+		\end{center}
+	\end{titlepage}
+	
+	\tableofcontents
+	\newpage
+	
+	\addcontentsline{toc}{section}{Цель работы}
+	\section*{Цель работы}
+	Изучить численные методы решения нелинейных уравнений и их
+	систем, найти корни заданного нелинейного уравнения/системы нелинейных уравнений, выполнить программную реализацию методов.
+	
+	\addcontentsline{toc}{section}{Ход работы}
+	\section*{Ход работы}
+	
+	\subsection*{Точное решение интеграла}
+	\addcontentsline{toc}{subsection}{Точное решение интеграла}
+	
+	\begin{flushleft}
+		Рассмотрим интеграл
+		\[
+		I=\int\limits_{1}^{2}(x^3+2x^2-3x-12)\,dx.
+		\]
+		
+		Разобьём подынтегральное выражение на сумму более простых слагаемых:
+		\[
+		I=\int\limits_{1}^{2}x^3\,dx+2\int\limits_{1}^{2}x^2\,dx-3\int\limits_{1}^{2}x\,dx-12\int\limits_{1}^{2}1\,dx.
+		\]
+		
+		Найдём первообразную:
+		\[
+		\int (x^3+2x^2-3x-12)\,dx=\frac{x^4}{4}+\frac{2x^3}{3}-\frac{3x^2}{2}-12x+C.
+		\]
+		
+		Тогда по формуле Ньютона--Лейбница получаем:
+		\[
+		I=\left[\frac{x^4}{4}+\frac{2x^3}{3}-\frac{3x^2}{2}-12x\right]_{1}^{2}.
+		\]
+		
+		Подставим пределы интегрирования:
+		\[
+		I=\left(\frac{2^4}{4}+\frac{2\cdot2^3}{3}-\frac{3\cdot2^2}{2}-12\cdot2\right)
+		-
+		\left(\frac{1^4}{4}+\frac{2\cdot1^3}{3}-\frac{3\cdot1^2}{2}-12\cdot1\right).
+		\]
+		
+		Вычислим значения:
+		\[
+		I=\left(\frac{16}{4}+\frac{16}{3}-\frac{12}{2}-24\right)
+		-\left(\frac{1}{4}+\frac{2}{3}-\frac{3}{2}-12\right).
+		\]
+		
+		После упрощения получаем:
+		\[
+		I=\left(4+\frac{16}{3}-6-24\right)-\left(\frac{1}{4}+\frac{2}{3}-\frac{3}{2}-12\right),
+		\]
+		\[
+		I=-\frac{62}{3}+\frac{151}{12}=-\frac{97}{12}.
+		\]
+		
+		Следовательно, точное значение интеграла равно:
+		\[
+		\boxed{I=-\frac{97}{12}\approx -8.08333.}
+		\]
+	\end{flushleft}
+	
+	\subsection*{Решение интеграла по формуле Ньютона--Котеса при $n=6$}
+	\addcontentsline{toc}{subsection}{Решение интеграла по формуле Ньютона--Котеса при $n=6$}
+	
+	\begin{flushleft}
+		Рассмотрим интеграл
+		\[
+		I=\int\limits_{1}^{2} (x^3+2x^2-3x-12)\,dx.
+		\]
+		
+		Для применения формулы Ньютона--Котеса при $n=6$ разобьём отрезок $[1;2]$ на 6 равных частей:
+		\[
+		h=\frac{b-a}{n}=\frac{2-1}{6}=\frac{1}{6}.
+		\]
+		
+		Тогда узлы имеют вид:
+		\[
+		x_i=1+\frac{i}{6}, \quad i=0,\dots,6.
+		\]
+		
+		Получаем:
+		\[
+		x_0=1,\quad x_1=\frac{7}{6},\quad x_2=\frac{4}{3},\quad x_3=\frac{3}{2},\quad
+		x_4=\frac{5}{3},\quad x_5=\frac{11}{6},\quad x_6=2.
+		\]
+		
+		Вычислим значения функции $f(x)=x^3+2x^2-3x-12$ в этих узлах:
+		\[
+		f(1)=-12,
+		\]
+		\[
+		f\left(\frac{7}{6}\right)=\left(\frac{7}{6}\right)^3+2\left(\frac{7}{6}\right)^2-3\cdot\frac{7}{6}-12
+		=-\frac{2417}{216}\approx -11.190,
+		\]
+		\[
+		f\left(\frac{4}{3}\right)=\left(\frac{4}{3}\right)^3+2\left(\frac{4}{3}\right)^2-3\cdot\frac{4}{3}-12
+		=-\frac{272}{27}\approx -10.074,
+		\]
+		\[
+		f\left(\frac{3}{2}\right)=\left(\frac{3}{2}\right)^3+2\left(\frac{3}{2}\right)^2-3\cdot\frac{3}{2}-12
+		=-\frac{69}{8}=-8.625,
+		\]
+		\[
+		f\left(\frac{5}{3}\right)=\left(\frac{5}{3}\right)^3+2\left(\frac{5}{3}\right)^2-3\cdot\frac{5}{3}-12
+		=-\frac{184}{27}\approx -6.815,
+		\]
+		\[
+		f\left(\frac{11}{6}\right)=\left(\frac{11}{6}\right)^3+2\left(\frac{11}{6}\right)^2-3\cdot\frac{11}{6}-12
+		=-\frac{997}{216}\approx -4.616,
+		\]
+		\[
+		f(2)=-2.
+		\]
+		
+		Для наглядности сведём значения в таблицу:
+		
+		\begin{center}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				$i$ & $x_i$ & $f(x_i)$ \\
+				\hline
+				0 & $1$ & $-12$ \\
+				\hline
+				1 & $\frac{7}{6}$ & $-\frac{2417}{216}\approx -11.190$ \\
+				\hline
+				2 & $\frac{4}{3}$ & $-\frac{272}{27}\approx -10.074$ \\
+				\hline
+				3 & $\frac{3}{2}$ & $-\frac{69}{8}=-8.625$ \\
+				\hline
+				4 & $\frac{5}{3}$ & $-\frac{184}{27}\approx -6.815$ \\
+				\hline
+				5 & $\frac{11}{6}$ & $-\frac{997}{216}\approx -4.616$ \\
+				\hline
+				6 & $2$ & $-2$ \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		По формуле Ньютона--Котеса при $n=6$:
+		\[
+		\int\limits_a^b f(x)\,dx \approx \sum_{i=0}^{6} c_i f(x_i),
+		\]
+		где коэффициенты равны:
+		\[
+		c_0=c_6=\frac{41(b-a)}{840},\quad
+		c_1=c_5=\frac{216(b-a)}{840},\quad
+		c_2=c_4=\frac{27(b-a)}{840},\quad
+		c_3=\frac{272(b-a)}{840}.
+		\]
+		
+		Так как $b-a=1$, получаем:
+		\[
+		I \approx \frac{1}{840}\left(41f(x_0)+216f(x_1)+27f(x_2)+272f(x_3)+27f(x_4)+216f(x_5)+41f(x_6)\right).
+		\]
+		
+		Подставим найденные значения:
+		\[
+		\begin{aligned}
+			I \approx \frac{1}{840}\Big(&
+			41(-12)+216\left(-\frac{2417}{216}\right)+27\left(-\frac{272}{27}\right) \\
+			&+272\left(-\frac{69}{8}\right)+27\left(-\frac{184}{27}\right) \\
+			&+216\left(-\frac{997}{216}\right)+41(-2)
+			\Big).
+		\end{aligned}
+		\]
+		
+		После упрощения:
+		\[
+		I \approx \frac{1}{840}\left(-492-2417-272-2346-184-997-82\right),
+		\]
+		\[
+		I \approx \frac{-6790}{840}=-\frac{97}{12}\approx -8.083.
+		\]
+		
+		Следовательно, значение интеграла по формуле Ньютона--Котеса при $n=6$:
+		\[
+		\boxed{I\approx -8.083.}
+		\]
+		
+		Так как подынтегральная функция является многочленом третьей степени, полученное значение совпадает с точным значением интеграла.
+	\end{flushleft}
+	
+	\subsection*{Решение интеграла по формуле средних прямоугольников при $n=10$}
+	\addcontentsline{toc}{subsection}{Решение интеграла по формуле средних прямоугольников при $n=10$}
+	
+	\begin{flushleft}
+		Рассмотрим интеграл
+		\[
+		I=\int\limits_{1}^{2}(x^3+2x^2-3x-12)\,dx.
+		\]
+		
+		Для метода средних прямоугольников при $n=10$ разобьём отрезок $[1;2]$ на 10 равных частей:
+		\[
+		h=\frac{b-a}{n}=\frac{2-1}{10}=0.1.
+		\]
+		
+		Формула средних прямоугольников имеет вид:
+		\[
+		I \approx h \sum_{i=1}^{n} f\left(x_{i-\frac12}\right),
+		\]
+		где
+		\[
+		x_{i-\frac12}=a+\left(i-\frac12\right)h.
+		\]
+		
+		Найдём середины частичных отрезков:
+		\[
+		x_{i-\frac12}=1+\left(i-\frac12\right)\cdot 0.1.
+		\]
+		
+		Тогда получаем:
+		\[
+		x_{1/2}=1.05,\quad x_{3/2}=1.15,\quad x_{5/2}=1.25,\quad x_{7/2}=1.35,\quad x_{9/2}=1.45,
+		\]
+		\[
+		x_{11/2}=1.55,\quad x_{13/2}=1.65,\quad x_{15/2}=1.75,\quad x_{17/2}=1.85,\quad x_{19/2}=1.95.
+		\]
+		
+		Вычислим значения функции $f(x)=x^3+2x^2-3x-12$ в этих точках:
+		
+		\begin{center}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				$i$ & $x_{i-\frac12}$ & $f\left(x_{i-\frac12}\right)$ \\
+				\hline
+				1 & $1.05$ & $-11.787375$ \\
+				\hline
+				2 & $1.15$ & $-11.284125$ \\
+				\hline
+				3 & $1.25$ & $-10.671875$ \\
+				\hline
+				4 & $1.35$ & $-9.944625$ \\
+				\hline
+				5 & $1.45$ & $-9.096375$ \\
+				\hline
+				6 & $1.55$ & $-8.121125$ \\
+				\hline
+				7 & $1.65$ & $-7.012875$ \\
+				\hline
+				8 & $1.75$ & $-5.765625$ \\
+				\hline
+				9 & $1.85$ & $-4.373375$ \\
+				\hline
+				10 & $1.95$ & $-2.830125$ \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		Тогда
+		\[
+		I \approx 0.1 \Big(
+		-11.787375-11.284125-10.671875-9.944625-9.096375
+		\]
+		\[
+		-8.121125-7.012875-5.765625-4.373375-2.830125
+		\Big).
+		\]
+		
+		Сумма значений функции равна:
+		\[
+		\sum_{i=1}^{10} f\left(x_{i-\frac12}\right) = -80.8875.
+		\]
+		
+		Следовательно,
+		\[
+		I \approx 0.1 \cdot (-80.8875) = -8.08875.
+		\]
+		
+		Итак, значение интеграла по формуле средних прямоугольников при $n=10$:
+		\[
+		\boxed{I\approx -8.08875.}
+		\]
+		
+		Сравним с точным значением:
+		\[
+		I_{\text{точн}}=-\frac{97}{12}\approx -8.08333.
+		\]
+		
+		Абсолютная погрешность равна:
+		\[
+		\Delta I = \left| -8.08333 - (-8.08875) \right| = 0.00542.
+		\]
+		
+		Следовательно, метод средних прямоугольников при $n=10$ даёт достаточно точное приближённое значение интеграла.
+	\end{flushleft}
+	
+	\subsection*{Решение интеграла по формуле трапеций при $n=10$}
+	\addcontentsline{toc}{subsection}{Решение интеграла по формуле трапеций при $n=10$}
+	
+	\begin{flushleft}
+		Рассмотрим интеграл
+		\[
+		I=\int\limits_{1}^{2}(x^3+2x^2-3x-12)\,dx.
+		\]
+		
+		Для применения формулы трапеций при $n=10$ разобьём отрезок $[1;2]$ на 10 равных частей:
+		\[
+		h=\frac{b-a}{n}=\frac{2-1}{10}=0.1.
+		\]
+		
+		Узлы разбиения:
+		\[
+		x_i=1+0.1i,\quad i=0,1,\dots,10.
+		\]
+		
+		Тогда получаем:
+		\[
+		x_0=1,\ x_1=1.1,\ x_2=1.2,\ x_3=1.3,\ x_4=1.4,\ x_5=1.5,
+		\]
+		\[
+		x_6=1.6,\ x_7=1.7,\ x_8=1.8,\ x_9=1.9,\ x_{10}=2.
+		\]
+		
+		Вычислим значения функции $f(x)=x^3+2x^2-3x-12$ в этих точках:
+		
+		\begin{center}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				$i$ & $x_i$ & $f(x_i)$ \\
+				\hline
+				0 & $1.0$ & $-12.000$ \\
+				\hline
+				1 & $1.1$ & $-11.549$ \\
+				\hline
+				2 & $1.2$ & $-10.992$ \\
+				\hline
+				3 & $1.3$ & $-10.323$ \\
+				\hline
+				4 & $1.4$ & $-9.536$ \\
+				\hline
+				5 & $1.5$ & $-8.625$ \\
+				\hline
+				6 & $1.6$ & $-7.584$ \\
+				\hline
+				7 & $1.7$ & $-6.407$ \\
+				\hline
+				8 & $1.8$ & $-5.088$ \\
+				\hline
+				9 & $1.9$ & $-3.621$ \\
+				\hline
+				10 & $2.0$ & $-2.000$ \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		Формула трапеций имеет вид:
+		\[
+		I \approx \frac{h}{2}\left(f(x_0)+2\sum_{i=1}^{n-1}f(x_i)+f(x_n)\right).
+		\]
+		
+		Подставим значения:
+		\[
+		I \approx \frac{0.1}{2}\left(f(x_0)+2\sum_{i=1}^{9}f(x_i)+f(x_{10})\right).
+		\]
+		
+		Найдём сумму внутренних значений:
+		\[
+		\sum_{i=1}^{9}f(x_i)= -11.549-10.992-10.323-9.536-8.625-7.584-6.407-5.088-3.621=-73.725.
+		\]
+		
+		Тогда
+		\[
+		I \approx \frac{0.1}{2}\left(-12+2(-73.725)-2\right).
+		\]
+		
+		После упрощения получаем:
+		\[
+		I \approx 0.05\cdot(-161.45)=-8.0725.
+		\]
+		
+		Следовательно, значение интеграла по формуле трапеций при $n=10$:
+		\[
+		\boxed{I\approx -8.0725.}
+		\]
+		
+		Сравним с точным значением:
+		\[
+		I_{\text{точн}}=-\frac{97}{12}\approx -8.08333.
+		\]
+		
+		Абсолютная погрешность равна:
+		\[
+		\Delta I=\left|-8.08333-(-8.0725)\right|=0.01083.
+		\]
+		
+		Следовательно, метод трапеций при $n=10$ даёт близкое к точному приближённое значение интеграла.
+	\end{flushleft}
+	
+	\subsection*{Решение интеграла по формуле Симпсона при $n=10$}
+	\addcontentsline{toc}{subsection}{Решение интеграла по формуле Симпсона при $n=10$}
+	
+	\begin{flushleft}
+		Рассмотрим интеграл
+		\[
+		I=\int\limits_{1}^{2}(x^3+2x^2-3x-12)\,dx.
+		\]
+		
+		Для применения формулы Симпсона при $n=10$ разобьём отрезок $[1;2]$ на 10 равных частей:
+		\[
+		h=\frac{b-a}{n}=\frac{2-1}{10}=0.1.
+		\]
+		
+		Узлы разбиения:
+		\[
+		x_i=1+0.1i,\quad i=0,1,\dots,10.
+		\]
+		
+		Тогда:
+		\[
+		x_0=1,\ x_1=1.1,\ x_2=1.2,\ x_3=1.3,\ x_4=1.4,\ x_5=1.5,
+		\]
+		\[
+		x_6=1.6,\ x_7=1.7,\ x_8=1.8,\ x_9=1.9,\ x_{10}=2.
+		\]
+		
+		Вычислим значения функции $f(x)=x^3+2x^2-3x-12$ в этих точках:
+		
+		\begin{center}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				$i$ & $x_i$ & $f(x_i)$ \\
+				\hline
+				0 & $1.0$ & $-12.000$ \\
+				\hline
+				1 & $1.1$ & $-11.549$ \\
+				\hline
+				2 & $1.2$ & $-10.992$ \\
+				\hline
+				3 & $1.3$ & $-10.323$ \\
+				\hline
+				4 & $1.4$ & $-9.536$ \\
+				\hline
+				5 & $1.5$ & $-8.625$ \\
+				\hline
+				6 & $1.6$ & $-7.584$ \\
+				\hline
+				7 & $1.7$ & $-6.407$ \\
+				\hline
+				8 & $1.8$ & $-5.088$ \\
+				\hline
+				9 & $1.9$ & $-3.621$ \\
+				\hline
+				10 & $2.0$ & $-2.000$ \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		Формула Симпсона имеет вид:
+		\[
+		I \approx \frac{h}{3}\left[f(x_0)+f(x_{10})+4\sum_{i=1,3,5,7,9}f(x_i)+2\sum_{i=2,4,6,8}f(x_i)\right].
+		\]
+		
+		Найдём суммы значений функции в нечётных и чётных узлах:
+		\[
+		f(x_1)+f(x_3)+f(x_5)+f(x_7)+f(x_9)
+		=-11.549-10.323-8.625-6.407-3.621=-40.525,
+		\]
+		\[
+		f(x_2)+f(x_4)+f(x_6)+f(x_8)
+		=-10.992-9.536-7.584-5.088=-33.2.
+		\]
+		
+		Подставим найденные значения в формулу Симпсона:
+		\[
+		I \approx \frac{0.1}{3}\left[ -12+(-2)+4(-40.525)+2(-33.2) \right].
+		\]
+		
+		После упрощения получаем:
+		\[
+		I \approx \frac{0.1}{3}\left(-14-162.1-66.4\right),
+		\]
+		\[
+		I \approx \frac{0.1}{3}\cdot(-242.5)=-8.08333.
+		\]
+		
+		Следовательно, значение интеграла по формуле Симпсона при $n=10$:
+		\[
+		\boxed{I\approx -8.08333.}
+		\]
+		
+		Сравним с точным значением:
+		\[
+		I_{\text{точн}}=-\frac{97}{12}\approx -8.08333.
+		\]
+		
+		Абсолютная погрешность равна:
+		\[
+		\Delta I=\left|-8.08333-(-8.08333)\right|=0.
+		\]
+		
+		Следовательно, метод Симпсона при $n=10$ в данном случае даёт точное значение интеграла, так как подынтегральная функция является многочленом третьей степени.
+	\end{flushleft}
+	\newpage
+	
+	\addcontentsline{toc}{section}{Блок-схемы используемых методов}
+	\section*{Блок-схемы используемых методов}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.25\linewidth]{Рисунок1.png}
+		\caption{Блок-схема метода прямоугольников}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.3\linewidth]{Рисунок2.png}
+		\caption{Блок-схема метода трапеций}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.3\linewidth]{Рисунок3.png}
+		\caption{Блок-схема метода Симпсона}
+	\end{figure}
+	
+	\addcontentsline{toc}{section}{Листинг программы}
+	\section*{Листинг программы}
+	\href{https://github.com/mysticslippers/math_comp_archive/blob/main/Lab3_comp_math/code/main.py}{Ссылка на репозиторий с кодом.}
+	
+	\addcontentsline{toc}{section}{Результат выполнения программы}
+	\section*{Результат выполнения программы}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1\linewidth]{scrn1.jpg}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1\linewidth]{scrn2.jpg}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\addcontentsline{toc}{section}{Вывод}
+	\section*{Вывод}
+	В результате выполнения данной лабораторной работой я познакомился с численными методами интегрирования и реализовал метод прямоугольников, метод трапеций и метод Симпсона на языке программирования Python, закрепив знания.
+\end{document}
