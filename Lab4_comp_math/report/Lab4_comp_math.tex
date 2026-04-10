@@ -1,0 +1,419 @@
+\documentclass[12pt]{report}
+
+\usepackage{cmap}
+\usepackage[T1,T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{dsfont}
+\usepackage{bm}
+\usepackage{diagbox}
+\usepackage[left=20mm,right=10mm,top=20mm,bottom=20mm,bindingoffset=2mm]{geometry}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{minted}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+
+\DeclareMathOperator{\N}{\mathbb{N}}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\Z}{\mathbb{Z}}
+\DeclareMathOperator{\CC}{\mathbb{C}}
+\DeclareMathOperator{\PP}{\mathrm{P}}
+\DeclareMathOperator{\Expec}{\mathrm{E}}
+\DeclareMathOperator{\Var}{\mathrm{Var}}
+\DeclareMathOperator{\Cov}{\mathrm{Cov}}
+\DeclareMathOperator{\asConv}{\xrightarrow{a.s.}}
+\DeclareMathOperator{\LpConv}{\xrightarrow{Lp}}
+\DeclareMathOperator{\pConv}{\xrightarrow{p}}
+\DeclareMathOperator{\dConv}{\xrightarrow{d}}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue,
+	urlcolor=blue
+}
+
+\lstset{language=Python, extendedchars=\true}
+
+\lstdefinestyle{pythonstyle}{
+	language=Python,
+	backgroundcolor=\color{lightgray},
+	commentstyle=\color{green},
+	keywordstyle=\color{blue},
+	stringstyle=\color{red},
+	basicstyle=\ttfamily,
+	frame=single,
+	breaklines=true
+}
+
+\addto\captionsrussian{\renewcommand{\refname}{Список использованных источников}}
+
+\begin{document}
+	
+	\begin{titlepage}
+		\begin{center}
+			\large{Федеральное государственное автономное образовательное учреждение высшего образования <<Национальный исследовательский университет ИТМО>>}
+		\end{center}
+		
+		\vspace{15em}
+		
+		\begin{center}
+			\huge{\textbf{Лабораторная работа №4}} \\
+			\large{По дисциплине <<Вычислительная математика>>} \\
+			\large{Вариант №12}
+		\end{center}
+		
+		\vspace{5em}
+		
+		\begin{flushright}
+			\textit{\large{Выполнил:}} \\
+			\large{Студент группы P3218} \\
+			\large{Михайлов Дмитрий} \\
+			\large{Андреевич} \\
+			\textit{\large{Преподаватель:}} \\
+			\large{Малышева Татьяна} \\
+			\large{Алексеевна}
+		\end{flushright}
+		
+		\vspace{2cm}
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.5\linewidth]{image.png}
+		\end{figure}
+		
+		\begin{center}
+			Санкт-Петербург \\
+			2026 год
+		\end{center}
+	\end{titlepage}
+	
+	\tableofcontents
+	\newpage
+	
+	\addcontentsline{toc}{section}{Цель работы}
+	\section*{Цель работы}
+	Изучить аппроксимации функции методом наименьших квадратов и реализовать их средствами программирования.
+	
+	\addcontentsline{toc}{section}{Ход работы}
+	\section*{Ход работы}
+	
+	Согласно заданию, для варианта №12 требуется исследовать функцию
+	\[
+	y = \frac{4x}{x^4 + 12}, \qquad x \in [-2; 0], \qquad h = 0{,}2.
+	\]
+	Необходимо:
+	\begin{enumerate}
+		\item составить таблицу значений функции в 11 точках заданного интервала;
+		\item построить линейное и квадратичное приближения методом наименьших квадратов;
+		\item вычислить среднеквадратическое отклонение для каждой аппроксимирующей функции;
+		\item выбрать наилучшее приближение.
+	\end{enumerate}
+	
+	\subsection*{1. Табулирование функции}
+	
+	Точки табулирования:
+	\[
+	x_i = -2 + 0{,}2(i-1), \qquad i = 1, 2, \dots, 11.
+	\]
+	
+	Таблица значений исходной функции:
+	\begin{center}
+		\begin{longtable}{>{\centering\arraybackslash}p{1.2cm} >{\centering\arraybackslash}p{2.2cm} >{\centering\arraybackslash}p{3.2cm}}
+			\toprule
+			$i$ & $x_i$ & $y_i=\dfrac{4x_i}{x_i^4+12}$ \\
+			\midrule
+			\endfirsthead
+			\toprule
+			$i$ & $x_i$ & $y_i=\dfrac{4x_i}{x_i^4+12}$ \\
+			\midrule
+			\endhead
+			1 & -2,0 & -0,285714 \\
+			2 & -1,8 & -0,320034 \\
+			3 & -1,6 & -0,344947 \\
+			4 & -1,4 & -0,353500 \\
+			5 & -1,2 & -0,341064 \\
+			6 & -1,0 & -0,307692 \\
+			7 & -0,8 & -0,257865 \\
+			8 & -0,6 & -0,197863 \\
+			9 & -0,4 & -0,133049 \\
+			10 & -0,2 & -0,066658 \\
+			11 & 0,0 & 0,000000 \\
+			\\ \bottomrule
+		\end{longtable}
+	\end{center}
+	
+	\subsection*{2. Линейная аппроксимация}
+	
+	Ищем линейную аппроксимирующую функцию в виде
+	\[
+	\varphi_1(x) = ax + b.
+	\]
+	
+	По методу наименьших квадратов коэффициенты $a$ и $b$ находятся из системы:
+	\[
+	\begin{cases}
+		a \sum x_i^2 + b \sum x_i = \sum x_i y_i,\\
+		a \sum x_i + bn = \sum y_i.
+	\end{cases}
+	\]
+	
+	Вычислим необходимые суммы:
+	\[
+	\sum x_i = -11,000000, \qquad
+	\sum x_i^2 = 15,400000, \qquad
+	\sum y_i = -2,608386, \qquad
+	\sum x_i y_i = 3,302834.
+	\]
+	
+	Тогда система принимает вид:
+	\[
+	\begin{cases}
+		15,400000a - 11b = 3,302834,\\
+		-11a + 11b = -2,608386.
+	\end{cases}
+	\]
+	
+	Решая систему, получаем:
+	\[
+	a = 0,157829, \qquad b = -0,079297.
+	\]
+	
+	Следовательно, линейное приближение имеет вид:
+	\[
+	\varphi_1(x) = 0,157829x - 0,079297.
+	\]
+	
+	Значения функции, полученные по линейной модели, и невязки:
+	\begin{center}
+		\begin{longtable}{>{\centering\arraybackslash}p{1cm} >{\centering\arraybackslash}p{1.7cm} >{\centering\arraybackslash}p{2.2cm} >{\centering\arraybackslash}p{2.6cm} >{\centering\arraybackslash}p{2.4cm}}
+			\toprule
+			$i$ & $x_i$ & $y_i$ & $\varphi_1(x_i)$ & $\varepsilon_i = \varphi_1(x_i)-y_i$ \\
+			\midrule
+			\endfirsthead
+			\toprule
+			$i$ & $x_i$ & $y_i$ & $\varphi_1(x_i)$ & $\varepsilon_i = \varphi_1(x_i)-y_i$ \\
+			\midrule
+			\endhead
+			1 & -2,0 & -0,285714 & -0,394955 & -0,109241 \\
+			2 & -1,8 & -0,320034 & -0,363389 & -0,043355 \\
+			3 & -1,6 & -0,344947 & -0,331823 & 0,013123 \\
+			4 & -1,4 & -0,353500 & -0,300258 & 0,053242 \\
+			5 & -1,2 & -0,341064 & -0,268692 & 0,072372 \\
+			6 & -1,0 & -0,307692 & -0,237126 & 0,070566 \\
+			7 & -0,8 & -0,257865 & -0,205560 & 0,052305 \\
+			8 & -0,6 & -0,197863 & -0,173994 & 0,023869 \\
+			9 & -0,4 & -0,133049 & -0,142429 & -0,009379 \\
+			10 & -0,2 & -0,066658 & -0,110863 & -0,044205 \\
+			11 & 0,0 & 0,000000 & -0,079297 & -0,079297 \\
+			\\ \bottomrule
+		\end{longtable}
+	\end{center}
+	
+	Мера отклонения:
+	\[
+	S_1 = \sum_{i=1}^{11} \varepsilon_i^2 = 0,038673.
+	\]
+	
+	Среднеквадратическое отклонение:
+	\[
+	\sigma_1 = \sqrt{\frac{S_1}{n}} = \sqrt{\frac{0,038673}{11}} = 0,059.
+	\]
+	
+	\subsection*{3. Квадратичная аппроксимация}
+	
+	Ищем квадратичную аппроксимирующую функцию в виде
+	\[
+	\varphi_2(x) = a_0 + a_1x + a_2x^2.
+	\]
+	
+	Нормальная система для квадратичной аппроксимации имеет вид:
+	\[
+	\begin{cases}
+		a_0n + a_1\sum x_i + a_2\sum x_i^2 = \sum y_i,\\
+		a_0\sum x_i + a_1\sum x_i^2 + a_2\sum x_i^3 = \sum x_i y_i,\\
+		a_0\sum x_i^2 + a_1\sum x_i^3 + a_2\sum x_i^4 = \sum x_i^2 y_i.
+	\end{cases}
+	\]
+	
+	Вычислим суммы:
+	\[
+	\sum x_i = -11,000000, \quad
+	\sum x_i^2 = 15,400000, \quad
+	\sum x_i^3 = -24,200000, \quad
+	\sum x_i^4 = 40,532800,
+	\]
+	\[
+	\sum y_i = -2,608386, \quad
+	\sum x_i y_i = 3,302834, \quad
+	\sum x_i^2 y_i = -4,814733.
+	\]
+	
+	Подставим их в систему:
+	\[
+	\begin{cases}
+		11a_0 - 11a_1 + 15,400000a_2 = -2,608386,\\
+		-11a_0 + 15,400000a_1 - 24,200000a_2 = 3,302834,\\
+		15,400000a_0 - 24,200000a_1 + 40,532800a_2 = -4,814733.
+	\end{cases}
+	\]
+	
+	Отсюда получаем коэффициенты:
+	\[
+	a_0 = 0,019437, \qquad
+	a_1 = 0,486943, \qquad
+	a_2 = 0,164557.
+	\]
+	
+	Следовательно, квадратичное приближение:
+	\[
+	\varphi_2(x) = 0,019437 + 0,486943x + 0,164557x^2.
+	\]
+	
+	Значения квадратичной модели и невязки:
+	\begin{center}
+		\begin{longtable}{>{\centering\arraybackslash}p{1cm} >{\centering\arraybackslash}p{1.7cm} >{\centering\arraybackslash}p{2.2cm} >{\centering\arraybackslash}p{2.6cm} >{\centering\arraybackslash}p{2.4cm}}
+			\toprule
+			$i$ & $x_i$ & $y_i$ & $\varphi_2(x_i)$ & $\varepsilon_i = \varphi_2(x_i)-y_i$ \\
+			\midrule
+			\endfirsthead
+			\toprule
+			$i$ & $x_i$ & $y_i$ & $\varphi_2(x_i)$ & $\varepsilon_i = \varphi_2(x_i)-y_i$ \\
+			\midrule
+			\endhead
+			1 & -2,0 & -0,285714 & -0,296221 & -0,010507 \\
+			2 & -1,8 & -0,320034 & -0,323896 & -0,003862 \\
+			3 & -1,6 & -0,344947 & -0,338406 & 0,006541 \\
+			4 & -1,4 & -0,353500 & -0,339751 & 0,013748 \\
+			5 & -1,2 & -0,341064 & -0,327932 & 0,013132 \\
+			6 & -1,0 & -0,307692 & -0,302949 & 0,004744 \\
+			7 & -0,8 & -0,257865 & -0,264801 & -0,006936 \\
+			8 & -0,6 & -0,197863 & -0,213488 & -0,015625 \\
+			9 & -0,4 & -0,133049 & -0,149011 & -0,015961 \\
+			10 & -0,2 & -0,066658 & -0,071369 & -0,004711 \\
+			11 & 0,0 & 0,000000 & 0,019437 & 0,019437 \\
+			\bottomrule
+		\end{longtable}
+	\end{center}
+	
+	Мера отклонения:
+	\[
+	S_2 = \sum_{i=1}^{11} \varepsilon_i^2 = 0,001499.
+	\]
+	
+	Среднеквадратическое отклонение:
+	\[
+	\sigma_2 = \sqrt{\frac{S_2}{n}} = \sqrt{\frac{0,001499}{11}} = 0,012.
+	\]
+	
+	\subsection*{4. Выбор наилучшего приближения}
+	
+	Сравним полученные значения среднеквадратического отклонения:
+	\[
+	\sigma_1 = 0,059, \qquad \sigma_2 = 0,012.
+	\]
+	
+	Так как
+	\[
+	0,012 < 0,059,
+	\]
+	то \textbf{наилучшим приближением на данном наборе точек является квадратичная аппроксимация}.
+	
+	\subsection*{5. Краткий итог вычислительной части}
+	
+	Итоговые аппроксимирующие функции:
+	\[
+	\varphi_1(x) = 0,157829x - 0,079297,
+	\]
+	\[
+	\varphi_2(x) = 0,019437 + 0,486943x + 0,164557x^2.
+	\]
+	
+	Среднеквадратические отклонения:
+	\[
+	\sigma_1 = 0,059, \qquad \sigma_2 = 0,012.
+	\]
+	
+	Следовательно, для функции
+	\[
+	y = \frac{4x}{x^4+12}
+	\]
+	на интервале $[-2;0]$ при шаге $0{,}2$ лучше использовать квадратичную аппроксимацию.
+	
+	
+	\newpage
+	
+	\addcontentsline{toc}{section}{Блок-схемы используемых методов}
+	\section*{Блок-схемы используемых методов}	
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.3\linewidth]{Рисунок1.png}
+		\caption{Блок-схема метода наименьших квадратов для линейной аппроксимации}
+	\end{figure}
+	
+	
+	\addcontentsline{toc}{section}{Листинг программы}
+	\section*{Листинг программы}
+	\href{https://github.com/mysticslippers/math_comp_archive/blob/main/Lab4_comp_math/code/main.py}{Ссылка на репозиторий с кодом.}
+	
+	\addcontentsline{toc}{section}{Результат выполнения программы}
+	\section*{Результат выполнения программы}
+	
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1\linewidth]{scr1.png}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1\linewidth]{scr2.png}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\linewidth]{scr3.png}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\linewidth]{scr4.png}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\linewidth]{scr6.png}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\linewidth]{graph.png}
+		\caption{Вывод графиков функций.}
+	\end{figure}
+	
+	
+	\addcontentsline{toc}{section}{Вывод}
+	\section*{Вывод}
+	В результате выполнения данной лабораторной работой я познакомился с аппроксимациями функции методом наименьших квадратов и реализовал их на языке программирования Python, закрепив знания.
+	Аппроксимация может потребоваться, например, в случае, если из эксперимента известны лишь некоторые значения функции и требуется найти неизвестное. Или же, если изначальная функция слишком сложна для регулярного использования.
+	Можно выделить следующие достоинства метода: расчеты довольны просты – необходимо лишь найти коэффициенты, полученная функция также проста, разнообразие возможных аппроксимирующих функций.
+	Основным недостатком МНК является чувствительность оценок к резким выбросам, которые встречаются в исходных данных.
+	
+	
+\end{document}
