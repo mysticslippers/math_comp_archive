@@ -1,0 +1,360 @@
+\documentclass[12pt]{report}
+
+\usepackage{cmap}
+\usepackage[T1,T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{dsfont}
+\usepackage{bm}
+\usepackage{diagbox}
+\usepackage[left=20mm,right=10mm,top=20mm,bottom=20mm,bindingoffset=2mm]{geometry}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{minted}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+
+\DeclareMathOperator{\N}{\mathbb{N}}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\Z}{\mathbb{Z}}
+\DeclareMathOperator{\CC}{\mathbb{C}}
+\DeclareMathOperator{\PP}{\mathrm{P}}
+\DeclareMathOperator{\Expec}{\mathrm{E}}
+\DeclareMathOperator{\Var}{\mathrm{Var}}
+\DeclareMathOperator{\Cov}{\mathrm{Cov}}
+\DeclareMathOperator{\asConv}{\xrightarrow{a.s.}}
+\DeclareMathOperator{\LpConv}{\xrightarrow{Lp}}
+\DeclareMathOperator{\pConv}{\xrightarrow{p}}
+\DeclareMathOperator{\dConv}{\xrightarrow{d}}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue,
+	urlcolor=blue
+}
+
+\lstset{language=Python, extendedchars=\true}
+
+\lstdefinestyle{pythonstyle}{
+	language=Python,
+	backgroundcolor=\color{lightgray},
+	commentstyle=\color{green},
+	keywordstyle=\color{blue},
+	stringstyle=\color{red},
+	basicstyle=\ttfamily,
+	frame=single,
+	breaklines=true
+}
+
+\addto\captionsrussian{\renewcommand{\refname}{Список использованных источников}}
+
+\begin{document}
+	
+	\begin{titlepage}
+		\begin{center}
+			\large{Федеральное государственное автономное образовательное учреждение высшего образования <<Национальный исследовательский университет ИТМО>>}
+		\end{center}
+		
+		\vspace{15em}
+		
+		\begin{center}
+			\huge{\textbf{Лабораторная работа №5}} \\
+			\large{По дисциплине <<Вычислительная математика>>} \\
+			\large{Вариант №12}
+		\end{center}
+		
+		\vspace{5em}
+		
+		\begin{flushright}
+			\textit{\large{Выполнил:}} \\
+			\large{Студент группы P3218} \\
+			\large{Михайлов Дмитрий} \\
+			\large{Андреевич} \\
+			\textit{\large{Преподаватель:}} \\
+			\large{Малышева Татьяна} \\
+			\large{Алексеевна}
+		\end{flushright}
+		
+		\vspace{2cm}
+		
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.5\linewidth]{image.png}
+		\end{figure}
+		
+		\begin{center}
+			Санкт-Петербург \\
+			2026 год
+		\end{center}
+	\end{titlepage}
+	
+	\tableofcontents
+	\newpage
+	
+	\addcontentsline{toc}{section}{Цель работы}
+	\section*{Цель работы}
+	Цель лабораторной работы: решить задачу интерполяции и найти значения функции при заданных значениях аргумента, отличных от узловых точек.
+	
+	\addcontentsline{toc}{section}{Ход работы}
+	\section*{Ход работы}
+	
+	\subsection*{Постановка задачи}
+	
+	Для варианта №12 из таблицы 1.2 заданы следующие узлы интерполяции:
+	\[
+	\begin{array}{c|ccccccc}
+		x_i & 0{,}50 & 0{,}55 & 0{,}60 & 0{,}65 & 0{,}70 & 0{,}75 & 0{,}80 \\
+		\hline
+		y_i & 1{,}5320 & 2{,}5356 & 3{,}5406 & 4{,}5462 & 5{,}5504 & 6{,}5559 & 7{,}5594
+	\end{array}
+	\]
+	
+	Требуется:
+	\begin{itemize}
+		\item построить таблицу конечных разностей;
+		\item вычислить значение функции в точке \(X_1 = 0{,}523\) по формуле Ньютона;
+		\item вычислить значение функции в точке \(X_2 = 0{,}639\) по формуле Гаусса.
+	\end{itemize}
+	
+	Так как узлы являются равноотстоящими, шаг интерполирования равен:
+	\[
+	h = 0{,}55 - 0{,}50 = 0{,}05.
+	\]
+	
+	\subsection*{Таблица конечных разностей}
+	
+	По исходным данным построим таблицу конечных разностей.
+	
+	\[
+	\begin{array}{c|c|c|c|c|c|c|c|c}
+		i & x_i & y_i & \Delta y_i & \Delta^2 y_i & \Delta^3 y_i & \Delta^4 y_i & \Delta^5 y_i & \Delta^6 y_i \\
+		\hline
+		0 & 0{,}50 & 1{,}5320 & 1{,}0036 & 0{,}0014 & -0{,}0008 & -0{,}0012 & 0{,}0059 & -0{,}0166 \\
+		1 & 0{,}55 & 2{,}5356 & 1{,}0050 & 0{,}0006 & -0{,}0020 & 0{,}0047 & -0{,}0107 & \\
+		2 & 0{,}60 & 3{,}5406 & 1{,}0056 & -0{,}0014 & 0{,}0027 & -0{,}0060 & & \\
+		3 & 0{,}65 & 4{,}5462 & 1{,}0042 & 0{,}0013 & -0{,}0033 & & & \\
+		4 & 0{,}70 & 5{,}5504 & 1{,}0055 & -0{,}0020 & & & & \\
+		5 & 0{,}75 & 6{,}5559 & 1{,}0035 & & & & & \\
+		6 & 0{,}80 & 7{,}5594 & & & & & &
+	\end{array}
+	\]
+	
+	\subsection*{Вычисление значения в точке \(X_1 = 0{,}523\) по первой формуле Ньютона}
+	
+	Так как точка \(X_1 = 0{,}523\) расположена ближе к началу таблицы, используем первую интерполяционную формулу Ньютона:
+	\[
+	P_n(x) = y_0 + t \Delta y_0 + \frac{t(t-1)}{2!}\Delta^2 y_0
+	+ \frac{t(t-1)(t-2)}{3!}\Delta^3 y_0
+	+ \frac{t(t-1)(t-2)(t-3)}{4!}\Delta^4 y_0 + \dots
+	\]
+	
+	Вычислим параметр \(t\):
+	\[
+	t = \frac{x - x_0}{h} = \frac{0{,}523 - 0{,}50}{0{,}05} = 0{,}46.
+	\]
+	
+	Подставим значения из таблицы конечных разностей:
+	\[
+	\begin{aligned}
+		P(0{,}523) =\;& 1{,}5320
+		+ 0{,}46 \cdot 1{,}0036
+		+ \frac{0{,}46(0{,}46-1)}{2!}\cdot 0{,}0014 \\
+		&+ \frac{0{,}46(0{,}46-1)(0{,}46-2)}{3!}\cdot (-0{,}0008) \\
+		&+ \frac{0{,}46(0{,}46-1)(0{,}46-2)(0{,}46-3)}{4!}\cdot (-0{,}0012) \\
+		&+ \frac{0{,}46(0{,}46-1)(0{,}46-2)(0{,}46-3)(0{,}46-4)}{5!}\cdot 0{,}0059 \\
+		&+ \frac{0{,}46(0{,}46-1)(0{,}46-2)(0{,}46-3)(0{,}46-4)(0{,}46-5)}{6!}\cdot (-0{,}0166).
+	\end{aligned}
+	\]
+	
+	Промежуточные слагаемые:
+	\[
+	\begin{aligned}
+		&0{,}46 \cdot 1{,}0036 = 0{,}461656,\\
+		&\frac{0{,}46(0{,}46-1)}{2}\cdot 0{,}0014 = -0{,}00017388,\\
+		&\frac{0{,}46(0{,}46-1)(0{,}46-2)}{6}\cdot (-0{,}0008) = -0{,}00005100,\\
+		&\frac{0{,}46(0{,}46-1)(0{,}46-2)(0{,}46-3)}{24}\cdot (-0{,}0012) = 0{,}00004858,\\
+		&\frac{0{,}46(0{,}46-1)(0{,}46-2)(0{,}46-3)(0{,}46-4)}{120}\cdot 0{,}0059 = 0{,}00016911,\\
+		&\frac{0{,}46(0{,}46-1)(0{,}46-2)(0{,}46-3)(0{,}46-4)(0{,}46-5)}{720}\cdot (-0{,}0166) = 0{,}00036003.
+	\end{aligned}
+	\]
+	
+	Тогда:
+	\[
+	P(0{,}523) \approx 1{,}994008843.
+	\]
+	
+	Следовательно,
+	\[
+	\boxed{f(0{,}523) \approx 1{,}9940.}
+	\]
+	
+	\subsection*{Вычисление значения в точке \(X_2 = 0{,}639\) по формуле Гаусса}
+	
+	Точка \(X_2 = 0{,}639\) находится близко к центральному узлу \(x_0 = 0{,}65\) и левее него, поэтому удобно использовать вторую формулу Гаусса.
+	
+	Положим:
+	\[
+	x_0 = 0{,}65,\qquad y_0 = 4{,}5462,\qquad
+	t = \frac{x - x_0}{h} = \frac{0{,}639 - 0{,}65}{0{,}05} = -0{,}22.
+	\]
+	
+	Вторая формула Гаусса имеет вид:
+	\[
+	\begin{aligned}
+		P(x)=\;& y_0 + t\Delta y_{-1}
+		+ \frac{t(t+1)}{2!}\Delta^2 y_{-1}
+		+ \frac{(t-1)t(t+1)}{3!}\Delta^3 y_{-2} \\
+		&+ \frac{(t-1)t(t+1)(t+2)}{4!}\Delta^4 y_{-2}
+		+ \frac{(t-2)(t-1)t(t+1)(t+2)}{5!}\Delta^5 y_{-3} \\
+		&+ \frac{(t-2)(t-1)t(t+1)(t+2)(t+3)}{6!}\Delta^6 y_{-3}.
+	\end{aligned}
+	\]
+	
+	Из таблицы конечных разностей:
+	\[
+	\Delta y_{-1} = 1{,}0056,\quad
+	\Delta^2 y_{-1} = -0{,}0014,\quad
+	\Delta^3 y_{-2} = -0{,}0020,
+	\]
+	\[
+	\Delta^4 y_{-2} = 0{,}0047,\quad
+	\Delta^5 y_{-3} = 0{,}0059,\quad
+	\Delta^6 y_{-3} = -0{,}0166.
+	\]
+	
+	Подставим значения:
+	\[
+	\begin{aligned}
+		P(0{,}639)=\;&4{,}5462
+		+ (-0{,}22)\cdot1{,}0056
+		+ \frac{(-0{,}22)(0{,}78)}{2}\cdot(-0{,}0014) \\
+		&+ \frac{(-1{,}22)(-0{,}22)(0{,}78)}{6}\cdot(-0{,}0020) \\
+		&+ \frac{(-1{,}22)(-0{,}22)(0{,}78)(1{,}78)}{24}\cdot0{,}0047 \\
+		&+ \frac{(-2{,}22)(-1{,}22)(-0{,}22)(0{,}78)(1{,}78)}{120}\cdot0{,}0059 \\
+		&+ \frac{(-2{,}22)(-1{,}22)(-0{,}22)(0{,}78)(1{,}78)(2{,}78)}{720}\cdot(-0{,}0166).
+	\end{aligned}
+	\]
+	
+	После вычислений получаем:
+	\[
+	P(0{,}639) \approx 4{,}325103662.
+	\]
+	
+	Следовательно,
+	\[
+	\boxed{f(0{,}639) \approx 4{,}3251.}
+	\]
+	
+	\subsection*{Итоги вычислительной части}
+	
+	В ходе вычислительной части была построена таблица конечных разностей и найдены приближённые значения функции в заданных точках:
+	\[
+	\boxed{f(0{,}523) \approx 1{,}9940}
+	\]
+	по первой формуле Ньютона и
+	\[
+	\boxed{f(0{,}639) \approx 4{,}3251}
+	\]
+	по второй формуле Гаусса.
+	
+	\newpage
+	
+	\addcontentsline{toc}{section}{Блок-схемы используемых методов}
+	\section*{Блок-схемы используемых методов}	
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.3\linewidth]{Рисунок1.png}
+		\caption{Блок-схема многочлена Лагранжа}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.3\linewidth]{Рисунок2.png}
+		\caption{Блок-схема многочлена Ньютона}
+	\end{figure}
+	
+	
+	\addcontentsline{toc}{section}{Листинг программы}
+	\section*{Листинг программы}
+	\href{https://github.com/mysticslippers/math_comp_archive/tree/main/Lab5_comp_math/code}{Ссылка на репозиторий с кодом.}
+	
+	\addcontentsline{toc}{section}{Результат выполнения программы}
+	\section*{Результат выполнения программы}
+	
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.6\linewidth]{screen1.png}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.6\linewidth]{screen2.png}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.6\linewidth]{screen3.png}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.6\linewidth]{screen4.png}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.6\linewidth]{screen5.png}
+		\caption{Пример выполнения программы.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\linewidth]{graph.png}
+		\caption{Вывод графиков функций.}
+	\end{figure}
+	
+	
+	\addcontentsline{toc}{section}{Вывод}
+	\section*{Вывод}
+	
+	\noindent
+	В ходе выполнения лабораторной работы была решена задача интерполяции функции по таблично заданным данным. Для варианта №12 была построена таблица конечных разностей, после чего вычислены приближённые значения функции в заданных точках с использованием интерполяционных формул Ньютона и Гаусса.
+	
+	\medskip
+	
+	\noindent
+	В результате вычислений получены следующие значения:
+	\[
+	f(0{,}523) \approx 1{,}9940,
+	\qquad
+	f(0{,}639) \approx 4{,}3251.
+	\]
+	
+	\medskip
+	
+	\noindent
+	Также в программной части были реализованы методы Лагранжа, Ньютона с разделёнными разностями и Гаусса. Программа позволяет задавать исходные данные несколькими способами, формировать таблицу конечных разностей, вычислять значение функции в произвольной точке и строить графики интерполяционных многочленов.
+	
+	\medskip
+	
+	\noindent
+	По результатам работы можно сделать вывод, что интерполяционные методы позволяют эффективно находить приближённые значения функции внутри заданного интервала по известным табличным значениям. Для равноотстоящих узлов удобно применять формулы Ньютона и Гаусса, так как они используют конечные разности и дают точные и наглядные результаты.
+	
+	
+\end{document}
